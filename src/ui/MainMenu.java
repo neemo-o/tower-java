@@ -1,5 +1,8 @@
 package ui;
 
-public class MainMenu {
+public class MainMenu extends JFrame {
 
+    public MainMenu() {
+
+    }
 }

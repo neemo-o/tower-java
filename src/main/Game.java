@@ -1,11 +1,9 @@
 package main;
+import ui.MainMenu;
 
-import ui.GameApp;
-
-public class Game {
+public class Game implements Mediator {
 
 	public static void main(String[] args) {
 		
-		GameApp UI = new GameApp();
 	}
 }
