@@ -5,7 +5,7 @@ public class Game implements Mediator {
 
 	public static void main(String[] args) {
 		Game jogo = new Game();
-		jogo.startGame();
+		jogo.showMainMenu();
 	}
 
 	public void showMainMenu() {
