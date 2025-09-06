@@ -13,15 +13,13 @@ public class MainMenu {
     }
 
     public void show() {
-        System.out.println("Iniciando menu");
+        System.out.println("TesteMenu");
 
-        ImageIcon icon = new ImageIcon("src/assets/logo.png");
         JFrame frame = new JFrame("InsecTD");
-        frame.setIconImage(icon.getImage());
+        frame.setIconImage(new ImageIcon("src/assets/logo.png").getImage());
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
-
         JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -29,7 +27,7 @@ public class MainMenu {
                 ImageIcon background = new ImageIcon("src/assets/background.png");
                 g.drawImage(background.getImage(), 0, 0, getWidth(), getHeight(), this);
 
-                ImageIcon logo = new ImageIcon("src/assets/logo2.png"); 
+                ImageIcon logo = new ImageIcon("src/assets/logo2.png");
                 int logoWidth = logo.getIconWidth() / 2;
                 int logoHeight = logo.getIconHeight() / 2;
                 int x = (getWidth() - logoWidth) / 2;
@@ -37,61 +35,60 @@ public class MainMenu {
                 g.drawImage(logo.getImage(), x, y, logoWidth, logoHeight, this);
             }
         };
-        panel.setLayout(new GridBagLayout()); 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 10, 2, 10);
+        panel.setLayout(new GridBagLayout());
 
+        JButton startButton = createMenuButton(
+                "src/assets/PlayBtn.png",
+                "src/assets/PlayClick.png",
+                _ -> {
+                    mediator.startGame();
+                    frame.dispose();
+                });
 
-        ImageIcon startNormal = new ImageIcon("src/assets/PlayBtn.png");
-        ImageIcon startHover = new ImageIcon("src/assets/PlayClick.png"); 
-        Image startImageHover = startHover.getImage().getScaledInstance(150, 60, Image.SCALE_SMOOTH); 
-        ImageIcon scaledStartNormalHover = new ImageIcon(startImageHover);
-        Image startImage = startNormal.getImage().getScaledInstance(150, 60, Image.SCALE_SMOOTH); 
-        ImageIcon scaledStartNormal = new ImageIcon(startImage);
-        JButton startButton = new JButton(scaledStartNormal);
-        startButton.setRolloverIcon(scaledStartNormalHover);
-        startButton.setBorderPainted(false);
-        startButton.setContentAreaFilled(false);
-        startButton.setBounds(500, 300, 100, 40);
-        startButton.setFocusPainted(false);
-        gbc.gridx = 0;
-        gbc.gridy = 1; 
-        gbc.anchor = GridBagConstraints.CENTER; 
-        panel.add(startButton, gbc);
+        JButton exitButton = createMenuButton(
+                "src/assets/ExitBtn.png",
+                "src/assets/ExitClick.png",
+                _ -> System.exit(0));
 
-
-        ImageIcon exitNormal = new ImageIcon("src/assets/ExitBtn.png");
-        ImageIcon exitHover = new ImageIcon("src/assets/ExitClick.png"); 
-        Image exitImageHover = exitHover.getImage().getScaledInstance(150, 60, Image.SCALE_SMOOTH); 
-        ImageIcon scaledExitNormalHover = new ImageIcon(exitImageHover);
-        Image exitImage = exitNormal.getImage().getScaledInstance(150, 60, Image.SCALE_SMOOTH); 
-        ImageIcon scaledExitNormal = new ImageIcon(exitImage);
-        JButton exitButton = new JButton(scaledExitNormal);
-        exitButton.setRolloverIcon(scaledExitNormalHover);
-        exitButton.setBorderPainted(false);
-        exitButton.setContentAreaFilled(false);
-        exitButton.setFocusPainted(false);
-        gbc.gridy = 2; 
-        panel.add(exitButton, gbc);
-
-
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mediator.startGame();
-                frame.dispose();
-            }
-        });
-
-        exitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0); 
-            }
-        });
+        addButtonsToPanel(panel, startButton, exitButton);
 
         frame.add(panel);
         frame.setVisible(true);
+        System.out.println("Menu iniciado");
     }
 
+    private JButton createMenuButton(String normalPath, String hoverPath, ActionListener event) {
+        ImageIcon normalIcon = scaleIcon(loadIcon(normalPath), 150, 60);
+        ImageIcon hoverIcon = scaleIcon(loadIcon(hoverPath), 150, 60);
+
+        JButton button = new JButton(normalIcon);
+        button.setRolloverIcon(hoverIcon);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.addActionListener(event);
+        return button;
+    }
+
+    private void addButtonsToPanel(JPanel panel, JButton startButton, JButton exitButton) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2, 10, 2, 10);
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        gbc.gridy = 1;
+        panel.add(startButton, gbc);
+
+        gbc.gridy = 2;
+        panel.add(exitButton, gbc);
+    }
+
+    private ImageIcon loadIcon(String path) {
+        return new ImageIcon(path);
+    }
+
+    private ImageIcon scaleIcon(ImageIcon icon, int width, int height) {
+        Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
+    }
 }
