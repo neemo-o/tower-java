@@ -1,12 +1,20 @@
 package ui;
 
+
 import main.Mediator;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.AudioInputStream;
+
 
 public class MainMenu {
     private Mediator mediator;
+    private Clip menuClip;
+    private FloatControl volumeControl;
+    private float musicVolume = 0.5f; 
 
     public MainMenu(Mediator mediator) {
         this.mediator = mediator;
@@ -20,6 +28,7 @@ public class MainMenu {
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
+
         JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -41,6 +50,7 @@ public class MainMenu {
                 "src/assets/PlayBtn.png",
                 "src/assets/PlayClick.png",
                 _ -> {
+                    stopMenuMusic();
                     mediator.startGame();
                     frame.dispose();
                 });
@@ -48,13 +58,57 @@ public class MainMenu {
         JButton exitButton = createMenuButton(
                 "src/assets/ExitBtn.png",
                 "src/assets/ExitClick.png",
-                _ -> System.exit(0));
+                _ -> {
+                    stopMenuMusic();
+                    System.exit(0);
+                });
 
         addButtonsToPanel(panel, startButton, exitButton);
 
         frame.add(panel);
         frame.setVisible(true);
+
+        playMenuMusic();
         System.out.println("Menu iniciado");
+    }
+
+
+    private void playMenuMusic() {
+        try {
+            if (menuClip != null && menuClip.isOpen()) {
+                menuClip.close();
+            }
+            AudioInputStream audioIn = javax.sound.sampled.AudioSystem.getAudioInputStream(new java.io.File("src/assets/menu-music.wav"));
+            menuClip = javax.sound.sampled.AudioSystem.getClip();
+            menuClip.open(audioIn);
+
+            // Controle de volume
+            if (menuClip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+                volumeControl = (FloatControl) menuClip.getControl(FloatControl.Type.MASTER_GAIN);
+                setMusicVolume(musicVolume);
+            }
+
+            menuClip.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (javax.sound.sampled.UnsupportedAudioFileException | java.io.IOException | javax.sound.sampled.LineUnavailableException e) {
+            System.out.println("Erro ao tocar música do menu: " + e.getMessage());
+        }
+    }
+
+    private void stopMenuMusic() {
+        if (menuClip != null) {
+            menuClip.stop();
+            menuClip.close();
+        }
+    }
+
+    public void setMusicVolume(float volume) {
+        if (volumeControl != null) {
+            float min = volumeControl.getMinimum();
+            float max = volumeControl.getMaximum();
+            float gain = min + (max - min) * volume;
+            volumeControl.setValue(gain);
+        }
+        musicVolume = volume;
     }
 
     private JButton createMenuButton(String normalPath, String hoverPath, ActionListener event) {
