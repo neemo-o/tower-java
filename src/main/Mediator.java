@@ -1,6 +1,5 @@
 package main;
 
 public interface Mediator {
-    void startGame();
-    void endGame();
+    void notify(Object sender, String event);
 }
