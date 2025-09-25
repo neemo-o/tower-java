@@ -20,11 +20,16 @@ public class Game implements Mediator {
                     
 
             System.out.println("Starting the game...");
-            // Aqui você pode iniciar a lógica do jogo
-            
-            // Por exemplo, criar uma instância de GameLoop e chamar seu método show()
+          
+            //n guento mais samisera nao funcionando. nao consigo deixar um looping novo
             GameLoop gameLoop = new GameLoop(this);
             gameLoop.show();
+            if (sender instanceof GameLoop && event.equals("endGame")) {
+                System.out.println("Game Over. Returning to Main Menu...");
+                showMainMenu();
+            
+            }
+            
 
         }
     }

@@ -14,10 +14,10 @@ public class GameLoop {
         this.mediator = mediator;
     }
     public void show() {
-        System.out.println("teste");
+        System.out.println("Início da Gameplay eu acho");
 
-        JFrame frame = new JFrame("Ins");
-        frame.setIconImage(new ImageIcon("src/assets/logo.png").getImage());
+        JFrame frame = new JFrame("inferno");
+        frame.setIconImage(new ImageIcon("src\\assets\\quadrado-padrao_702545-138_554x600.png").getImage());
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -28,7 +28,30 @@ public class GameLoop {
                 super.paintComponent(g);
                 ImageIcon background = new ImageIcon("src\\assets\\quadrado-padrao_702545-138_554x600.png");
                 g.drawImage(background.getImage(), 0, 0, getWidth(), getHeight(), this);
+                
+            }  
+        };
+        panel.setLayout(new GridBagLayout());
+        frame.add(panel);
+        frame.setVisible(true);
+        // Aqui você pode iniciar a lógica do jogo
+        // Por exemplo, criar uma instância de GameLoop e chamar seu método show()
+        //gameLoop.show();
+        // Simulando o fim do jogo após 5 segundos (apenas para demonstração
+        new Timer(5000, e -> {
+            mediator.notify(this, "endGame");
+            frame.dispose();
+        }).start();
+
+        frame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int keyCode = e.getKeyCode();
+                if (keyCode == KeyEvent.VK_ESCAPE) {
+                    mediator.notify(GameLoop.this, "endGame");
+                    frame.dispose();
+                }
             }
+        });
         };
     }
-}
