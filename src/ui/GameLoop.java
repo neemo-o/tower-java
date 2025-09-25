@@ -34,15 +34,13 @@ public class GameLoop {
         panel.setLayout(new GridBagLayout());
         frame.add(panel);
         frame.setVisible(true);
-        // Aqui você pode iniciar a lógica do jogo
-        // Por exemplo, criar uma instância de GameLoop e chamar seu método show()
-        //gameLoop.show();
-        // Simulando o fim do jogo após 5 segundos (apenas para demonstração
-        new Timer(5000, e -> {
+        // dai um temporizador que eu garimpei pra testar esse troço
+       /*  new Timer(5000, e -> {
             mediator.notify(this, "endGame");
             frame.dispose();
-        }).start();
+        }).start(); */
 
+        //funciona mas nao sei como fazer isso sair sem o temporizador. calma ae
         frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
