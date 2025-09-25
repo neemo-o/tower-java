@@ -21,14 +21,12 @@ public class Game implements Mediator {
 
             System.out.println("Starting the game...");
           
-            //n guento mais samisera nao funcionando. nao consigo deixar um looping novo
+            //agora foi :)
             GameLoop gameLoop = new GameLoop(this);
             gameLoop.show();
-            if (sender instanceof GameLoop && event.equals("endGame")) {
-                System.out.println("Game Over. Returning to Main Menu...");
-                showMainMenu();
             
-            }
+            
+            
             
 
         }
