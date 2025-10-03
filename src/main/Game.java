@@ -17,18 +17,9 @@ public class Game implements Mediator {
     @Override
     public void notify(Object sender, String event) {
         if (sender instanceof MainMenu && event.equals("startGame")) {
-                    
-
             System.out.println("Starting the game...");
-          
-            //agora foi :)
-            GameLoop gameLoop = new GameLoop(this);
-            gameLoop.show();
-            
-            
-            
-            
-
+            GameLoop loop = new GameLoop(this);
+            loop.start();
         }
     }
 }

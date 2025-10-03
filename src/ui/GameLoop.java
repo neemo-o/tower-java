@@ -11,71 +11,56 @@ public class GameLoop {
     private float musicVolume = 0.5f;
     private Sound soundPlayer = new Sound();
 
+    private JFrame frame;
+    private GamePanel gamePanel;
+    private Timer timer;
+
     public GameLoop(Mediator mediator) {
         this.mediator = mediator;
     }
-    public void show() {
-        System.out.println("Início da Gameplay eu acho");
 
-        JFrame frame = new JFrame("INSECTD *-* ");
-        frame.setIconImage(new ImageIcon("src\\assets\\background.png").getImage());
+    public void start() {
+        frame = new JFrame("InsecTD - Jogo");
+        frame.setIconImage(new ImageIcon("src/assets/logo.png").getImage());
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                ImageIcon background = new ImageIcon("src\\assets\\BaseScreenGamming.jpeg");
-                g.drawImage(background.getImage(), 0, 0, getWidth(), getHeight(), this);
-                
-            }  
-        };
-        panel.setLayout(new GridBagLayout());
-
-        JButton exitScreen = createGameButton(
-                normalPath:"src\\assets\\ExitButton.jpg",
-                
-                _ -> {
-                    mediator.notify(this, "exitScreen");
-                    frame.dispose();
-                });
-        frame.add(panel);
+        gamePanel = new GamePanel();
+        frame.add(gamePanel);
         frame.setVisible(true);
 
-        private JButton createGameButton(String normalPath, String hoverPath, ActionListener event) {
-        ImageIcon normalIcon = scaleIcon(loadIcon(normalPath), 150, 60);
-        ImageIcon hoverIcon = scaleIcon(loadIcon(hoverPath), 150, 60);
-
-        JButton button = new JButton(normalIcon);
-        button.setRolloverIcon(hoverIcon);
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(false);
-        button.setFocusPainted(false);
-        button.addActionListener(event);
-        return button;
+        // Loop básico de jogo com Swing Timer (~60 FPS)
+        int delayMs = 1000 / 60;
+        timer = new Timer(delayMs, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                update();
+                gamePanel.repaint();
+            }
+        });
+        timer.start();
     }
 
-     private void addButtonsToPanel(JPanel panel, JButton exitScreen){
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 10, 2, 10);
-        gbc.gridx = 0;
-        gbc.anchor = GridBagConstraints.CENTER;
-
-        gbc.gridy = 1;
-        panel.add(exitScreen, gbc);
-
+    private void update() {
+        // Atualizações de lógica do jogo irão aqui (inputs, inimigos, projéteis, etc.)
     }
 
-        // dai um temporizador que eu garimpei pra testar esse troço
-       /*  new Timer(5000, e -> {
-            mediator.notify(this, "endGame");
-            frame.dispose();
-        }).start(); */
+    private static class GamePanel extends JPanel {
+        private final Image background;
 
-        //funciona mas nao sei como fazer isso sair sem o temporizador. calma ae
-        
-                
-          }
+        public GamePanel() {
+            setDoubleBuffered(true);
+            background = new ImageIcon("src/assets/GameCenario.png").getImage();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (background != null) {
+                g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+            }
+            // Futuro: desenhar entidades, HUD, etc.
+        }
     }
+}
