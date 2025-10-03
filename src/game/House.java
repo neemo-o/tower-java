@@ -27,14 +27,13 @@ public class House {
     }
 
     public void render(Graphics2D g) {
-        // Desenhar ponto da casa
         int size = 20;
         int y = position.y - size / 2;
         
 
         // Barra de vida acima
-        int barX = position.x - barWidth / 2;
-        int barY = y - 125;
+        int barX = position.x - barWidth / 4;
+        int barY = y - 225;
         float ratio = Math.max(0f, Math.min(1f, health / (float) maxHealth));
         g.setColor(barBackColor);
         g.fillRect(barX, barY, barWidth, barHeight);
@@ -42,6 +41,16 @@ public class House {
         g.fillRect(barX, barY, Math.round(barWidth * ratio), barHeight);
         g.setColor(barBorderColor);
         g.drawRect(barX, barY, barWidth, barHeight);
+        String hpText = health + "/" + maxHealth + " HP";
+        Font old = g.getFont();
+        Font f = old.deriveFont(Font.BOLD, 12f);
+        g.setFont(f);
+        FontMetrics fm = g.getFontMetrics();
+        int tx = barX + (barWidth - fm.stringWidth(hpText)) / 2;
+        int ty = barY - 4;
+        g.setColor(Color.BLACK);
+        g.drawString(hpText, tx, ty);
+        g.setFont(old);
     }
 }
 

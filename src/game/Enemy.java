@@ -37,7 +37,12 @@ public class Enemy {
         int drawX = Math.round(x) - type.width / 2;
         int drawY = Math.round(y) - type.height / 2;
         if (type.image != null) {
-            g.drawImage(type.image, drawX, drawY, type.width, type.height, null);
+            if (type.isFlipHorizontal()) {
+                // Desenha espelhado no eixo X
+                g.drawImage(type.image, drawX + type.width, drawY, -type.width, type.height, null);
+            } else {
+                g.drawImage(type.image, drawX, drawY, type.width, type.height, null);
+            }
         } else {
             g.setColor(Color.RED);
             g.fillOval(drawX, drawY, type.width, type.height);
@@ -54,6 +59,18 @@ public class Enemy {
         g.fillRect(drawX, drawY - 6, Math.round(barW * healthRatio), barH);
         g.setColor(Color.BLACK);
         g.drawRect(drawX, drawY - 6, barW, barH);
+
+        // texto HP
+        String hpText = health + "/" + type.maxHealth + " HP";
+        Font old = g.getFont();
+        Font f = old.deriveFont(Font.BOLD, 10f);
+        g.setFont(f);
+        FontMetrics fm = g.getFontMetrics();
+        int tx = drawX + (barW - fm.stringWidth(hpText)) / 2;
+        int ty = drawY - 6 - 2; // acima da barra
+        g.setColor(Color.BLACK);
+        g.drawString(hpText, tx, ty);
+        g.setFont(old);
     }
 
     public boolean hasReachedTarget() { return reachedTarget; }
