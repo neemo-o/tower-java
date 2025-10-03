@@ -1,6 +1,7 @@
 package main;
 
 import ui.MainMenu;
+import util.Sound;
 import ui.GameLoop;
 public class Game implements Mediator {
 
@@ -18,8 +19,11 @@ public class Game implements Mediator {
     public void notify(Object sender, String event) {
         if (sender instanceof MainMenu && event.equals("startGame")) {
             System.out.println("Starting the game...");
+            Sound sons = new Sound();
+            sons.stopAllLoops();
             GameLoop loop = new GameLoop(this);
             loop.start();
+            sons.playLoop("battle-music.wav", 0.55f);
         }
     }
 }

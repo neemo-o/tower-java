@@ -61,7 +61,7 @@ public class MainMenu {
         frame.add(panel);
         frame.setVisible(true);
 
-        soundPlayer.play("menu-music.wav", musicVolume);
+        soundPlayer.playLoop("menu-music.wav", musicVolume);
         System.out.println("Menu iniciado");
     }
 
