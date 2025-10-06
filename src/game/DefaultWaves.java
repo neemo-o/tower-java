@@ -14,7 +14,7 @@ public class DefaultWaves {
 
         EnemyGroup w1 = new EnemyGroup();
         for (int i = 0; i < 6; i++) {
-            w1.add(new EnemySpawn(basic, i % 2, i * 4000));
+            w1.add(new EnemySpawn(basic, 0, i * 4000));
         }
         list.add(new WaveConfig(2, 15000, w1));
 

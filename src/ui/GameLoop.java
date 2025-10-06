@@ -25,6 +25,13 @@ public class GameLoop {
 	private Color waveIndicatorColor = Color.WHITE;
 	private Font waveTransitionFont = new Font("Arial", Font.BOLD, 36);
 	private Color waveTransitionColor = Color.YELLOW;
+	
+
+	// moeda do jogo
+	private int money = 100; // ramon moeda inicial (caso precise balancear depois)
+	private Font moneyFont = new Font("Arial", Font.BOLD, 16);
+	private Color moneyTextColor = Color.WHITE;
+	private Color moneyShadowColor = Color.BLACK;
 
     public GameLoop(Mediator mediator) {
         this.mediator = mediator;
@@ -38,7 +45,6 @@ public class GameLoop {
         frame.setLocationRelativeTo(null);
 
 		waveController.setSpawnPoint(0, new Point(40, 560));
-		waveController.setSpawnPoint(1, new Point(10, 400));
 		waveController.setTargetPoint(house.position);
 
 
@@ -100,6 +106,7 @@ public class GameLoop {
 
 	private static class GamePanel extends JPanel {
 		private final Image background;
+		private final Image coinImage;
 		private final WaveController waveControllerRef;
 		private final House houseRef;
 		private final GameLoop loopRef;
@@ -107,6 +114,14 @@ public class GameLoop {
 		public GamePanel(WaveController wc, House house, GameLoop loop) {
 			setDoubleBuffered(true);
 			background = new ImageIcon("src/assets/GameCenario.png").getImage();
+			Image tmpCoin = null;
+			try {
+				Image img = new ImageIcon("src/assets/coin.png").getImage();
+				tmpCoin = img;
+			} catch (Exception ex) {
+				tmpCoin = null;
+			}
+			this.coinImage = tmpCoin;
 			this.waveControllerRef = wc;
 			this.houseRef = house;
 			this.loopRef = loop;
@@ -141,6 +156,44 @@ public class GameLoop {
 				g2.drawString(indicator, tx + 1, ty + 1);
 				g2.setColor(loopRef.waveIndicatorColor);
 				g2.drawString(indicator, tx, ty);
+				g2.setFont(old);
+			}
+
+			// HUD: moeda no canto superior direito (ícone + texto)
+			if (loopRef != null) {
+				Font old = g2.getFont();
+				g2.setFont(loopRef.moneyFont);
+				FontMetrics fm = g2.getFontMetrics();
+				String moneyStr = String.valueOf(loopRef.money);
+				int padding = 10;
+				int iconSize = 20;
+				int gap = 6;
+				int right = getWidth() - padding;
+				int textW = fm.stringWidth(moneyStr);
+				int iconX = right - textW - gap - iconSize;
+				int iconY = padding;
+				int textX = right - textW;
+				int textY = padding + fm.getAscent();
+
+				// ícone de moeda (imagem dos assets se disponível, senão fallback círculo)
+				Color oldColor = g2.getColor();
+				if (coinImage != null) {
+					g2.drawImage(coinImage, iconX, iconY, iconSize, iconSize, this);
+				} else {
+					g2.setColor(new Color(255, 208, 0));
+					g2.fillOval(iconX, iconY, iconSize, iconSize);
+					g2.setColor(new Color(200, 140, 0));
+					g2.drawOval(iconX, iconY, iconSize, iconSize);
+					// detalhe interno
+					g2.drawOval(iconX + 4, iconY + 4, iconSize - 8, iconSize - 8);
+				}
+
+				// texto com sombra leve
+				g2.setColor(loopRef.moneyShadowColor);
+				g2.drawString(moneyStr, textX + 1, textY + 1);
+				g2.setColor(loopRef.moneyTextColor);
+				g2.drawString(moneyStr, textX, textY);
+				g2.setColor(oldColor);
 				g2.setFont(old);
 			}
 
