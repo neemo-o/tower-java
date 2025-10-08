@@ -45,7 +45,11 @@ public class Enemy {
             }
         } else {
             g.setColor(Color.RED);
-            g.fillOval(drawX, drawY, type.width, type.height);
+            if (type.category == EnemyCategory.AIR) {
+                g.fillOval(drawX, drawY, type.width, type.height);
+            } else {
+                g.fillRect(drawX, drawY, type.width, type.height);
+            }
         }
 
 
@@ -80,6 +84,7 @@ public class Enemy {
     public boolean isDead() { return health <= 0; }
     public float getX() { return x; }
     public float getY() { return y; }
+    public EnemyType getType() { return type; }
 }
 
 
