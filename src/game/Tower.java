@@ -1,6 +1,5 @@
 package game;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
@@ -16,8 +15,6 @@ public class Tower {
     public int width = 28;
     public int height = 28;
     public String displayName;
-    public int level = 1;
-    public int baseUpgradeCost = 50;
 
 	private float fireCooldown;
 
@@ -48,14 +45,6 @@ public class Tower {
 				break;
 		}
 		this.fireCooldown = 0f;
-	}
-
-	private Image load(String path) {
-		try {
-			return new ImageIcon(path).getImage();
-		} catch (Exception e) {
-			return null;
-		}
 	}
 
 	public void update(float deltaSeconds, List<Enemy> enemies, List<TowerProjectile> outProjectiles) {
@@ -93,8 +82,8 @@ public class Tower {
 	}
 
 	private boolean canTarget(Enemy e) {
-		if (tipo == Tipo.AIR) return e.getType().category == EnemyCategory.AIR;
-		return e.getType().category == EnemyCategory.GROUND || tipo == Tipo.FAST;
+		if (tipo == Tipo.AIR) return true; // Torres aéreas podem atacar qualquer inimigo
+		return e.getType().category == EnemyCategory.GROUND; // Torres normais e rápidas só atacam terrestres
 	}
 
     public void render(Graphics2D g, boolean showRangeOutline) {
@@ -114,18 +103,6 @@ public class Tower {
         }
 	}
 
-    public int getNextUpgradeCost() {
-        if (level >= 3) return -1;
-        return baseUpgradeCost * level;
-    }
-
-    public void applyUpgrade() {
-        if (level >= 3) return;
-        level++;
-        damage += 1;
-        fireRatePerSecond += 0.3f;
-        rangeRadius += 10f;
-    }
 }
 
 
