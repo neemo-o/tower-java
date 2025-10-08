@@ -19,6 +19,7 @@ public class WaveController {
     private long waveStartTimeMs = 0L;
     private int reachedCountThisTick = 0;
     private int killedCountThisTick = 0;
+    private int rewardToGive = 0;
     private boolean autoAdvance = false;
 
     public java.util.List<Enemy> getActiveEnemies() { return activeEnemies; }
@@ -75,6 +76,7 @@ public class WaveController {
                 it.remove();
             } else if (e.isDead()) {
                 killedCountThisTick += 1;
+                rewardToGive = e.getReward();
                 it.remove();
             }
         }
@@ -94,6 +96,12 @@ public class WaveController {
     public int consumeKilledCount() {
         int v = killedCountThisTick;
         killedCountThisTick = 0;
+        return v;
+    }
+
+    public int giveReward() {
+        int v = rewardToGive;
+        rewardToGive = 0;
         return v;
     }
 

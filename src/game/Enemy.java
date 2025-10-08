@@ -8,6 +8,7 @@ public class Enemy {
     private float y;
     private int health;
     private boolean reachedTarget;
+    private int reward;
 
     public Enemy(EnemyType type, float startX, float startY) {
         this.type = type;
@@ -15,6 +16,7 @@ public class Enemy {
         this.y = startY;
         this.health = type.maxHealth;
         this.reachedTarget = false;
+        this.reward = type.reward;
     }
 
     // um pouco bugado, mas funciona
@@ -85,6 +87,7 @@ public class Enemy {
     public float getX() { return x; }
     public float getY() { return y; }
     public EnemyType getType() { return type; }
+    public int getReward() { return reward; }
 }
 
 

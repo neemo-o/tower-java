@@ -11,13 +11,18 @@ public class EnemyType {
     public final int width;
     public final int height;
     public final EnemyCategory category;
+    public final int reward;
     private boolean flipHorizontal = false;
 
     public EnemyType(String name, int maxHealth, float velocidade, String imagePath, int width, int height) {
-        this(name, maxHealth, velocidade, imagePath, width, height, EnemyCategory.GROUND);
+        this(name, maxHealth, velocidade, imagePath, width, height, EnemyCategory.GROUND, 10);
     }
 
     public EnemyType(String name, int maxHealth, float velocidade, String imagePath, int width, int height, EnemyCategory category) {
+        this(name, maxHealth, velocidade, imagePath, width, height, category, 10);
+    }
+
+    public EnemyType(String name, int maxHealth, float velocidade, String imagePath, int width, int height, EnemyCategory category, int reward) {
         this.name = name;
         this.maxHealth = maxHealth;
         this.velocidade = velocidade;
@@ -26,6 +31,7 @@ public class EnemyType {
         this.width = width;
         this.height = height;
         this.category = category;
+        this.reward = reward;
     }
 
     public boolean isFlipHorizontal() {
