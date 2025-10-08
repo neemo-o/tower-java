@@ -16,7 +16,7 @@ public class GameLoop {
     private GamePanel gamePanel;
     private Timer timer;
 	private final WaveController waveController = new WaveController();
-	private final House house = new House(new Point(365, 400), 350);
+	private final House house = new House(new Point(365, 400), 100);
 	private long lastFrameTimeNs = 0L;
 	// Wave UI e transição
 	private boolean transitioning = false;
@@ -130,6 +130,14 @@ public class GameLoop {
 		float delta = lastFrameTimeNs == 0L ? 0f : (nowNs - lastFrameTimeNs) / 1_000_000_000f;
 		lastFrameTimeNs = nowNs;
 
+		if (waveController.isAllWavesFinished()) {
+			timer.stop();
+			JOptionPane.showMessageDialog(frame, "sabe muito");
+            mediator.notify(this, "MainMenu");
+			frame.dispose();
+		}
+
+
 		if (!transitioning) {
 			waveController.update(delta);
 		}
@@ -150,8 +158,9 @@ public class GameLoop {
 			house.damage(reached);
 			if (house.isDestroyed()) {
 				timer.stop();
-				JOptionPane.showMessageDialog(frame, "Game Over.");
-                mediator.notify(this, "gameOver");
+				JOptionPane.showMessageDialog(frame, "morreu. perdemo");
+                mediator.notify(this, "MainMenu");
+				frame.dispose();
 			}
 		}
 		int killed = waveController.consumeKilledCount();

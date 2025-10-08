@@ -24,6 +24,11 @@ public class Game implements Mediator {
             GameLoop loop = new GameLoop(this);
             loop.start();
             sons.playLoop("battle-music.wav", 0.55f);
+        } else if  (sender instanceof GameLoop && event.equals("MainMenu")) {
+            System.out.println("Remaking the main menu...");
+            Sound sons = new Sound();
+            sons.stopAllLoops();
+            showMainMenu();
         }
     }
 }
