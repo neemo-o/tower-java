@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import game.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class GameLoop {
     private Mediator mediator;
@@ -33,6 +35,18 @@ public class GameLoop {
 	private Color moneyTextColor = Color.WHITE;
 	private Color moneyShadowColor = Color.BLACK;
 
+	// Torres
+	private final java.util.List<Tower> towers = new ArrayList<>();
+	private final java.util.List<TowerProjectile> projectiles = new ArrayList<>();
+	private Rectangle placementArea = new Rectangle(120, 250, 200, 150);
+	private Tower.Tipo selectedTowerKind = null;
+	private Point mousePos = new Point(0,0);
+	private Tower hoveredTower = null;
+	// UI botões
+	private final Rectangle btnNormal = new Rectangle(10, 60, 90, 30);
+	private final Rectangle btnAir = new Rectangle(110, 60, 90, 30);
+	private final Rectangle btnFast = new Rectangle(210, 60, 90, 30);
+
     public GameLoop(Mediator mediator) {
         this.mediator = mediator;
     }
@@ -59,6 +73,46 @@ public class GameLoop {
         frame.add(gamePanel);
         frame.setVisible(true);
 
+		frame.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_1) selectedTowerKind = Tower.Tipo.NORMAL;
+				else if (e.getKeyCode() == KeyEvent.VK_2) selectedTowerKind = Tower.Tipo.AIR;
+				else if (e.getKeyCode() == KeyEvent.VK_3) selectedTowerKind = Tower.Tipo.FAST;
+				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) selectedTowerKind = null;
+			}
+		});
+		gamePanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				Point p = e.getPoint();
+				// clique em botões
+				if (btnNormal.contains(p)) { selectedTowerKind = Tower.Tipo.NORMAL; return; }
+				if (btnAir.contains(p)) { selectedTowerKind = Tower.Tipo.AIR; return; }
+				if (btnFast.contains(p)) { selectedTowerKind = Tower.Tipo.FAST; return; }
+				if (placementArea.contains(p)) {
+					int cost = selectedTowerKind == Tower.Tipo.FAST ? 80 : (selectedTowerKind == Tower.Tipo.AIR ? 100 : 60);
+					if (selectedTowerKind != null && money >= cost) {
+						money -= cost;
+						towers.add(new Tower(selectedTowerKind, p));
+						selectedTowerKind = null; 
+					}
+				}
+			}
+		});
+		gamePanel.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				mousePos = e.getPoint();
+				// detectar hover em torre
+				hoveredTower = null;
+				for (Tower t : towers) {
+					Rectangle r = new Rectangle(t.position.x - t.width/2, t.position.y - t.height/2, t.width, t.height);
+					if (r.contains(mousePos)) { hoveredTower = t; break; }
+				}
+			}
+		});
+
 		int delayMs = 1000 / 60;
         timer = new Timer(delayMs, new ActionListener() {
             @Override
@@ -79,6 +133,18 @@ public class GameLoop {
 		if (!transitioning) {
 			waveController.update(delta);
 		}
+		// atualizar torres e projéteis quando jogo rolando
+		if (!transitioning) {
+			for (Tower t : towers) {
+				t.update(delta, waveController.getActiveEnemies(), projectiles);
+			}
+			Iterator<TowerProjectile> it = projectiles.iterator();
+			while (it.hasNext()) {
+				TowerProjectile p = it.next();
+				p.update(delta, waveController.getActiveEnemies());
+				if (p.isExpired()) it.remove();
+			}
+		}
 		int reached = waveController.consumeReachedCount();
 		if (reached > 0) {
 			house.damage(reached);
@@ -87,6 +153,10 @@ public class GameLoop {
 				JOptionPane.showMessageDialog(frame, "Game Over.");
                 mediator.notify(this, "gameOver");
 			}
+		}
+		int killed = waveController.consumeKilledCount();
+		if (killed > 0) {
+			money += killed * 5; 
 		}
 
 		if (transitioning) {
@@ -104,7 +174,7 @@ public class GameLoop {
 		}
 	}
 
-	private static class GamePanel extends JPanel {
+	private class GamePanel extends JPanel {
 		private final Image background;
 		private final Image coinImage;
 		private final WaveController waveControllerRef;
@@ -128,7 +198,7 @@ public class GameLoop {
 		}
 
         @Override
-        protected void paintComponent(Graphics g) {
+		protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 			if (background != null) {
 				g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
@@ -142,6 +212,15 @@ public class GameLoop {
 				for (Enemy e : waveControllerRef.getActiveEnemies()) {
 					e.render(g2);
 				}
+			}
+
+			// desenhar torres e projéteis
+			for (Tower t : loopRef.towers) {
+				boolean showRange = (loopRef.hoveredTower == t);
+				t.render(g2, showRange);
+			}
+			for (TowerProjectile p : loopRef.projectiles) {
+				p.render(g2);
 			}
 
 			// animacao para waves
@@ -159,7 +238,6 @@ public class GameLoop {
 				g2.setFont(old);
 			}
 
-			// HUD: moeda no canto superior direito (ícone + texto)
 			if (loopRef != null) {
 				Font old = g2.getFont();
 				g2.setFont(loopRef.moneyFont);
@@ -175,19 +253,11 @@ public class GameLoop {
 				int textX = right - textW;
 				int textY = padding + fm.getAscent();
 
-				// ícone de moeda (imagem dos assets se disponível, senão fallback círculo)
+				
 				Color oldColor = g2.getColor();
 				if (coinImage != null) {
 					g2.drawImage(coinImage, iconX, iconY, iconSize, iconSize, this);
-				} else {
-					g2.setColor(new Color(255, 208, 0));
-					g2.fillOval(iconX, iconY, iconSize, iconSize);
-					g2.setColor(new Color(200, 140, 0));
-					g2.drawOval(iconX, iconY, iconSize, iconSize);
-					// detalhe interno
-					g2.drawOval(iconX + 4, iconY + 4, iconSize - 8, iconSize - 8);
 				}
-
 				// texto com sombra leve
 				g2.setColor(loopRef.moneyShadowColor);
 				g2.drawString(moneyStr, textX + 1, textY + 1);
@@ -216,6 +286,69 @@ public class GameLoop {
 				g2.setFont(old);
 				g2.setComposite(oldC);
 			}
+
+			if (loopRef != null && loopRef.placementArea != null && loopRef.selectedTowerKind != null) {
+				Color oldC2 = g2.getColor();
+				g2.setColor(new Color(0, 255, 0, 60));
+				g2.fillRect(loopRef.placementArea.x, loopRef.placementArea.y, loopRef.placementArea.width, loopRef.placementArea.height);
+				g2.setColor(new Color(0, 150, 0));
+				g2.drawRect(loopRef.placementArea.x, loopRef.placementArea.y, loopRef.placementArea.width, loopRef.placementArea.height);
+				g2.setColor(oldC2);
+			}
+
+			Color oldUi = g2.getColor();
+			Font oldFont = g2.getFont();
+			g2.setFont(new Font("Arial", Font.BOLD, 12));
+			drawUIButton(g2, btnNormal, "Normal", loopRef.selectedTowerKind == Tower.Tipo.NORMAL);
+			drawUIButton(g2, btnAir, "Aérea", loopRef.selectedTowerKind == Tower.Tipo.AIR);
+			drawUIButton(g2, btnFast, "Rápida", loopRef.selectedTowerKind == Tower.Tipo.FAST);
+			g2.setFont(oldFont);
+			g2.setColor(oldUi);
+
+			// Tooltip da torre ao hover
+			if (loopRef.hoveredTower != null) {
+				Tower t = loopRef.hoveredTower;
+				String[] lines = buildTowerInfoLines(t);
+				int pad = 6;
+				FontMetrics fm = g2.getFontMetrics();
+				int w = 0; for (String s: lines) w = Math.max(w, fm.stringWidth(s));
+				int h = fm.getHeight() * lines.length + pad * 2;
+				int x = loopRef.mousePos.x + 12;
+				int y = loopRef.mousePos.y + 12;
+				g2.setColor(new Color(0,0,0,170));
+				g2.fillRoundRect(x, y, w + pad*2, h, 8, 8);
+				g2.setColor(Color.WHITE);
+				int ty = y + pad + fm.getAscent();
+				for (String s : lines) {
+					g2.drawString(s, x + pad, ty);
+					ty += fm.getHeight();
+				}
+			}
         }
-    }
+
+		private void drawUIButton(Graphics2D g2, Rectangle r, String label, boolean selected) {
+			Color old = g2.getColor();
+			g2.setColor(selected ? new Color(60, 120, 255) : new Color(40, 40, 40, 180));
+			g2.fillRoundRect(r.x, r.y, r.width, r.height, 8, 8);
+			g2.setColor(Color.WHITE);
+			g2.drawRoundRect(r.x, r.y, r.width, r.height, 8, 8);
+			FontMetrics fm = g2.getFontMetrics();
+			int tx = r.x + (r.width - fm.stringWidth(label)) / 2;
+			int ty = r.y + (r.height + fm.getAscent()) / 2 - 3;
+			g2.drawString(label, tx, ty);
+			g2.setColor(old);
+		}
+
+		private String[] buildTowerInfoLines(Tower t) {
+			int nextCost = t.getNextUpgradeCost();
+			return new String[] {
+				(t.displayName != null ? t.displayName : "Torre"),
+				"Nível: " + t.level,
+				"Dano: " + t.damage,
+				"Cadência: " + String.format("%.2f/s", t.fireRatePerSecond),
+				"Alcance: " + Math.round(t.rangeRadius),
+				nextCost > 0 ? ("Próx. upgrade: " + nextCost) : "Maximizada"
+			};
+		}
+	}
 }
