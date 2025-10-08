@@ -18,6 +18,7 @@ public class WaveController {
     private int currentWaveIndex = -1;
     private long waveStartTimeMs = 0L;
     private int reachedCountThisTick = 0;
+    private int killedCountThisTick = 0;
     private boolean autoAdvance = false;
 
     public java.util.List<Enemy> getActiveEnemies() { return activeEnemies; }
@@ -57,6 +58,7 @@ public class WaveController {
 
     public void update(float deltaSeconds) {
         reachedCountThisTick = 0;
+        killedCountThisTick = 0;
         long now = System.currentTimeMillis();
         while (!scheduledSpawns.isEmpty() && scheduledSpawns.peek().spawnTimeMs <= now) {
             SpawnEvent evt = scheduledSpawns.poll();
@@ -72,6 +74,7 @@ public class WaveController {
                 reachedCountThisTick += e.getHealth();
                 it.remove();
             } else if (e.isDead()) {
+                killedCountThisTick += 1;
                 it.remove();
             }
         }
@@ -85,6 +88,12 @@ public class WaveController {
     public int consumeReachedCount() {
         int v = reachedCountThisTick;
         reachedCountThisTick = 0;
+        return v;
+    }
+
+    public int consumeKilledCount() {
+        int v = killedCountThisTick;
+        killedCountThisTick = 0;
         return v;
     }
 
