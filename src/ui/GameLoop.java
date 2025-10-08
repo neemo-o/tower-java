@@ -155,8 +155,9 @@ public class GameLoop {
 			}
 		}
 		int killed = waveController.consumeKilledCount();
+		int reward = waveController.giveReward();
 		if (killed > 0) {
-			money += killed * 5; 
+			money += killed * reward; 
 		}
 
 		if (transitioning) {
@@ -340,14 +341,11 @@ public class GameLoop {
 		}
 
 		private String[] buildTowerInfoLines(Tower t) {
-			int nextCost = t.getNextUpgradeCost();
 			return new String[] {
 				(t.displayName != null ? t.displayName : "Torre"),
-				"Nível: " + t.level,
 				"Dano: " + t.damage,
 				"Cadência: " + String.format("%.2f/s", t.fireRatePerSecond),
-				"Alcance: " + Math.round(t.rangeRadius),
-				nextCost > 0 ? ("Próx. upgrade: " + nextCost) : "Maximizada"
+				"Alcance: " + Math.round(t.rangeRadius)
 			};
 		}
 	}
