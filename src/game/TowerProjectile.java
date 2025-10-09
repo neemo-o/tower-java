@@ -10,7 +10,7 @@ public class TowerProjectile {
 	private final float vy;
 	private final int damage;
 	private final Image image;
-    private final int size = 8;
+    private final int size = 24;
 	private boolean expired = false;
 
 	public TowerProjectile(float x, float y, float vx, float vy, int damage) {
@@ -25,7 +25,7 @@ public class TowerProjectile {
 		} catch (Exception e) {
 			tmp = null;
 		}
-		this.image = null;
+		this.image = tmp;
 	}
 
 	public void update(float delta, java.util.List<Enemy> enemies) {
@@ -50,6 +50,8 @@ public class TowerProjectile {
 	public void render(Graphics2D g) {
 		int drawX = Math.round(x) - size/2;
 		int drawY = Math.round(y) - size/2;
+
+		// TODO: ramon fazer a sandalia girar por favor para qualquer lado
         if (image != null) {
             g.drawImage(image, drawX, drawY, size, size, null);
         } else {

@@ -3,6 +3,8 @@ package game;
 import java.awt.*;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
 public class Tower {
     public enum Tipo { NORMAL, AIR, FAST }
 
@@ -12,35 +14,35 @@ public class Tower {
 	public int damage;
 	public float fireRatePerSecond;
 	public Image image;
-    public int width = 28;
-    public int height = 28;
+    public int width = 32;
+    public int height = 32;
     public String displayName;
 
 	private float fireCooldown;
 
+
+	// TODO: ramon fazer a rotação do personagem ao atirar
     public Tower(Tipo tipo, Point position) {
 		this.tipo = tipo;
 		this.position = position;
+		this.image = new ImageIcon("src/assets/tower_test.png").getImage();
 		switch (tipo) {
 			case NORMAL:
 				this.rangeRadius = 140f;
 				this.damage = 4;
 				this.fireRatePerSecond = 1.1f;
-				//this.image = load("src/assets/tower_normal.png");
                 this.displayName = "Torre Normal";
 				break;
 			case AIR:
 				this.rangeRadius = 130f;
 				this.damage = 5;
 				this.fireRatePerSecond = 0.8f;
-				//this.image = load("src/assets/tower_air.png");
                 this.displayName = "Torre Aérea";
 				break;
 			case FAST:
 				this.rangeRadius = 100f;
 				this.damage = 2;
 				this.fireRatePerSecond = 2.2f;
-				//this.image = load("src/assets/tower_fast.png");
                 this.displayName = "Torre Rápida";
 				break;
 		}

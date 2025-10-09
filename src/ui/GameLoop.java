@@ -354,7 +354,7 @@ public class GameLoop {
 			return new String[] {
 				(t.displayName != null ? t.displayName : "Torre"),
 				"Dano: " + t.damage,
-				"Cadência: " + String.format("%.2f/s", t.fireRatePerSecond),
+				"Velocidade de Ataque: " + String.format("%.2f/s", t.fireRatePerSecond),
 				"Alcance: " + Math.round(t.rangeRadius)
 			};
 		}
