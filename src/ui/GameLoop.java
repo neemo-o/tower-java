@@ -72,6 +72,7 @@ public class GameLoop {
 		gamePanel = new GamePanel(waveController, house, this);
         frame.add(gamePanel);
         frame.setVisible(true);
+		frame.setResizable(false);
 
 		frame.addKeyListener(new KeyAdapter() {
 			@Override

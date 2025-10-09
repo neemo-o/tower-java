@@ -23,6 +23,7 @@ public class MainMenu {
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
 
         JPanel panel = new JPanel() {
             @Override
