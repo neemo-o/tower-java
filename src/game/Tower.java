@@ -17,6 +17,7 @@ public class Tower {
     public int width = 32;
     public int height = 32;
     public String displayName;
+    public int cost; // custo da torre
 
 	private float fireCooldown;
 
@@ -32,22 +33,36 @@ public class Tower {
 				this.damage = 4;
 				this.fireRatePerSecond = 1.1f;
                 this.displayName = "Torre Normal";
+                this.cost = 60;
 				break;
 			case AIR:
 				this.rangeRadius = 130f;
 				this.damage = 5;
 				this.fireRatePerSecond = 0.8f;
                 this.displayName = "Torre Aérea";
+                this.cost = 100;
 				break;
 			case FAST:
 				this.rangeRadius = 100f;
 				this.damage = 2;
 				this.fireRatePerSecond = 2.2f;
                 this.displayName = "Torre Rápida";
+                this.cost = 80;
 				break;
 		}
 		this.fireCooldown = 0f;
 	}
+
+    
+    public static int getCost(Tipo tipo) {
+        if (tipo == null) return 0;
+        switch (tipo) {
+            case NORMAL: return 60;
+            case AIR:    return 100;
+            case FAST:   return 80;
+            default:     return 0;
+        }
+    }
 
 	public void update(float deltaSeconds, List<Enemy> enemies, List<TowerProjectile> outProjectiles) {
 		fireCooldown -= deltaSeconds;

@@ -11,7 +11,6 @@ import java.util.Iterator;
 public class GameLoop {
     private Mediator mediator;
 
-
     private JFrame frame;
     private GamePanel gamePanel;
     private Timer timer;
@@ -46,9 +45,37 @@ public class GameLoop {
 	private final Rectangle btnNormal = new Rectangle(10, 60, 90, 30);
 	private final Rectangle btnAir = new Rectangle(110, 60, 90, 30);
 	private final Rectangle btnFast = new Rectangle(210, 60, 90, 30);
+	private TowerPreview currentPreview;
+	private Rectangle selectedTowerBtn = null;
 
     public GameLoop(Mediator mediator) {
         this.mediator = mediator;
+    }
+
+    private void drawUIButton(Graphics2D g2, Rectangle r, String label, boolean selected) {
+        Color old = g2.getColor();
+        Color btnColor = selected ? new Color(60, 120, 255) : new Color(40, 40, 40, 180);
+        g2.setColor(btnColor);
+        g2.fillRoundRect(r.x, r.y, r.width, r.height, 8, 8);
+        g2.setColor(Color.WHITE);
+        g2.drawRoundRect(r.x, r.y, r.width, r.height, 8, 8);
+        FontMetrics fm = g2.getFontMetrics();
+        int tx = r.x + (r.width - fm.stringWidth(label)) / 2;
+        int ty = r.y + (r.height + fm.getAscent()) / 2 - 3;
+        g2.drawString(label, tx, ty);
+        g2.setColor(old);
+    }
+
+    private boolean canPlaceTowerAt(Point p) {
+        if (!placementArea.contains(p)) return false;
+        
+        // Verificar se não há outra torre muito próxima
+        for (Tower t : towers) {
+            double dist = p.distance(t.position);
+            if (dist < 32) return false; // Distância mínima entre torres
+        }
+        
+        return true;
     }
 
     public void start() {
@@ -80,24 +107,12 @@ public class GameLoop {
 				if (e.getKeyCode() == KeyEvent.VK_1) selectedTowerKind = Tower.Tipo.NORMAL;
 				else if (e.getKeyCode() == KeyEvent.VK_2) selectedTowerKind = Tower.Tipo.AIR;
 				else if (e.getKeyCode() == KeyEvent.VK_3) selectedTowerKind = Tower.Tipo.FAST;
-				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) selectedTowerKind = null;
-			}
-		});
-		gamePanel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				Point p = e.getPoint();
-				// clique em botões
-				if (btnNormal.contains(p)) { selectedTowerKind = Tower.Tipo.NORMAL; return; }
-				if (btnAir.contains(p)) { selectedTowerKind = Tower.Tipo.AIR; return; }
-				if (btnFast.contains(p)) { selectedTowerKind = Tower.Tipo.FAST; return; }
-				if (placementArea.contains(p)) {
-					int cost = selectedTowerKind == Tower.Tipo.FAST ? 80 : (selectedTowerKind == Tower.Tipo.AIR ? 100 : 60);
-					if (selectedTowerKind != null && money >= cost) {
-						money -= cost;
-						towers.add(new Tower(selectedTowerKind, p));
-						selectedTowerKind = null; 
-					}
+				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					// cancelar colocação: limpar seleção, preview e highlight do botão
+					selectedTowerKind = null;
+					selectedTowerBtn = null;
+					currentPreview = null;
+					if (gamePanel != null) gamePanel.repaint();
 				}
 			}
 		});
@@ -111,9 +126,77 @@ public class GameLoop {
 					Rectangle r = new Rectangle(t.position.x - t.width/2, t.position.y - t.height/2, t.width, t.height);
 					if (r.contains(mousePos)) { hoveredTower = t; break; }
 				}
+				
+				// Atualizar preview da torre
+				if (selectedTowerKind != null) {
+					currentPreview = new TowerPreview(
+						selectedTowerKind,
+						mousePos,
+						canPlaceTowerAt(mousePos)
+					);
+					gamePanel.repaint();
+				} else {
+					// garantir que preview suma quando não há seleção
+					if (currentPreview != null) {
+						currentPreview = null;
+						gamePanel.repaint();
+					}
+				}
 			}
 		});
 
+		gamePanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				Point p = e.getPoint();
+
+				// clique direito cancela a colocação (e não coloca torre)
+				if (SwingUtilities.isRightMouseButton(e)) {
+					selectedTowerKind = null;
+					selectedTowerBtn = null;
+					currentPreview = null;
+					gamePanel.repaint();
+					return;
+				}
+
+				// só prosseguir para colocação se for clique esquerdo
+				if (!SwingUtilities.isLeftMouseButton(e)) return;
+				
+				// Reset seleção ao clicar fora
+				if (!btnNormal.contains(p) && !btnAir.contains(p) && !btnFast.contains(p)) {
+					selectedTowerBtn = null;
+				}
+				
+				// Clique em botões
+				if (btnNormal.contains(p)) {
+					selectedTowerKind = Tower.Tipo.NORMAL;
+					selectedTowerBtn = btnNormal;
+					return;
+				}
+				if (btnAir.contains(p)) {
+					selectedTowerKind = Tower.Tipo.AIR;
+					selectedTowerBtn = btnAir;
+					return;
+				}
+				if (btnFast.contains(p)) {
+					selectedTowerKind = Tower.Tipo.FAST;
+					selectedTowerBtn = btnFast;
+					return;
+				}
+				
+				// Tentar colocar torre
+				if (selectedTowerKind != null && canPlaceTowerAt(p)) {
+					int cost = Tower.getCost(selectedTowerKind);
+					if (money >= cost) {
+						money -= cost;
+						towers.add(new Tower(selectedTowerKind, p));
+						selectedTowerKind = null;
+						currentPreview = null;
+						selectedTowerBtn = null;
+					}
+				}
+			}
+		});
 		int delayMs = 1000 / 60;
         timer = new Timer(delayMs, new ActionListener() {
             @Override
@@ -307,15 +390,21 @@ public class GameLoop {
 				g2.setColor(oldC2);
 			}
 
+			// Desenhar botões com highlight quando selecionados
 			Color oldUi = g2.getColor();
 			Font oldFont = g2.getFont();
 			g2.setFont(new Font("Arial", Font.BOLD, 12));
-			drawUIButton(g2, btnNormal, "Normal", loopRef.selectedTowerKind == Tower.Tipo.NORMAL);
-			drawUIButton(g2, btnAir, "Aérea", loopRef.selectedTowerKind == Tower.Tipo.AIR);
-			drawUIButton(g2, btnFast, "Rápida", loopRef.selectedTowerKind == Tower.Tipo.FAST);
+			drawUIButton(g2, btnNormal, "Normal", btnNormal == selectedTowerBtn);
+			drawUIButton(g2, btnAir, "Aérea", btnAir == selectedTowerBtn);
+			drawUIButton(g2, btnFast, "Rápida", btnFast == selectedTowerBtn);
 			g2.setFont(oldFont);
 			g2.setColor(oldUi);
 
+			// Desenhar preview da torre
+			if (currentPreview != null) {
+				currentPreview.render(g2);
+			}
+			
 			// Tooltip da torre ao hover
 			if (loopRef.hoveredTower != null) {
 				Tower t = loopRef.hoveredTower;
@@ -336,19 +425,6 @@ public class GameLoop {
 				}
 			}
         }
-
-		private void drawUIButton(Graphics2D g2, Rectangle r, String label, boolean selected) {
-			Color old = g2.getColor();
-			g2.setColor(selected ? new Color(60, 120, 255) : new Color(40, 40, 40, 180));
-			g2.fillRoundRect(r.x, r.y, r.width, r.height, 8, 8);
-			g2.setColor(Color.WHITE);
-			g2.drawRoundRect(r.x, r.y, r.width, r.height, 8, 8);
-			FontMetrics fm = g2.getFontMetrics();
-			int tx = r.x + (r.width - fm.stringWidth(label)) / 2;
-			int ty = r.y + (r.height + fm.getAscent()) / 2 - 3;
-			g2.drawString(label, tx, ty);
-			g2.setColor(old);
-		}
 
 		private String[] buildTowerInfoLines(Tower t) {
 			return new String[] {
