@@ -57,5 +57,6 @@ public class TowerPreview {
         // restaurar estado gráfico
         g.setComposite(oldComp);
         g.setColor(oldColor);
+        
     }
 }
