@@ -3,6 +3,7 @@ package game;
 import java.awt.*;
 
 public class TowerPreview {
+    private final Tower.Tipo towerType;
     private final Point position;
     private final float range;
     private final boolean canPlace;
