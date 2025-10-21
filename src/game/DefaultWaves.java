@@ -52,12 +52,15 @@ public class DefaultWaves {
                 w5.add(new EnemySpawn(fast, 0, i * 1500));
             } else if (i % 2 == 1) {
                 w5.add(new EnemySpawn(tank, 0, i * 800));
-
         }
     }
-        
-            list.add(new WaveConfig(2, 15000, w5));
-        
+    list.add(new WaveConfig(2, 15000, w5));
+
+        EnemyGroup w6 = new EnemyGroup();
+        for (int i = 0; i < 21; i++) {
+            w6.add(new EnemySpawn(basic, 0, i * 500));
+        }
+        list.add(new WaveConfig(2, 15000, w6));
 
         return list;
     }
