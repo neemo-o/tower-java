@@ -29,25 +29,25 @@ public class Tower {
 		this.image = new ImageIcon("src/assets/tower_test.png").getImage();
 		switch (tipo) {
 			case NORMAL:
-				this.rangeRadius = 140f;
+				this.rangeRadius = 150f;
 				this.damage = 8;
 				this.fireRatePerSecond = 0.9f;
                 this.displayName = "Torre Normal";
-                this.cost = 60;
+                this.cost = 80;
 				break;
 			case AIR:
 				this.rangeRadius = 130f;
 				this.damage = 3;
 				this.fireRatePerSecond = 1.4f;
                 this.displayName = "Torre Aérea";
-                this.cost = 100;
+                this.cost = 90;
 				break;
 			case FAST:
 				this.rangeRadius = 100f;
-				this.damage = 3;
-				this.fireRatePerSecond = 2.3f;
+				this.damage = 2;
+				this.fireRatePerSecond = 2.7f;
                 this.displayName = "Torre Rápida";
-                this.cost = 80;
+                this.cost = 75;
 				break;
 		}
 		this.fireCooldown = 0f;
