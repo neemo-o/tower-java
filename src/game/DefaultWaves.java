@@ -40,7 +40,6 @@ public class DefaultWaves {
         
             list.add(new WaveConfig(2, 15000, w3));
 
-
         EnemyGroup w4 = new EnemyGroup();
         for (int i = 0; i < 7; i++) {
             w4.add(new EnemySpawn(tank, 0, i * 900));

@@ -30,22 +30,22 @@ public class Tower {
 		switch (tipo) {
 			case NORMAL:
 				this.rangeRadius = 140f;
-				this.damage = 4;
-				this.fireRatePerSecond = 1.1f;
+				this.damage = 8;
+				this.fireRatePerSecond = 0.9f;
                 this.displayName = "Torre Normal";
                 this.cost = 60;
 				break;
 			case AIR:
 				this.rangeRadius = 130f;
-				this.damage = 5;
-				this.fireRatePerSecond = 0.8f;
+				this.damage = 3;
+				this.fireRatePerSecond = 1.4f;
                 this.displayName = "Torre Aérea";
                 this.cost = 100;
 				break;
 			case FAST:
 				this.rangeRadius = 100f;
-				this.damage = 2;
-				this.fireRatePerSecond = 2.2f;
+				this.damage = 3;
+				this.fireRatePerSecond = 2.3f;
                 this.displayName = "Torre Rápida";
                 this.cost = 80;
 				break;
