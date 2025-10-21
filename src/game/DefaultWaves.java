@@ -7,8 +7,8 @@ public class DefaultWaves {
     public static List<WaveConfig> create() {
         List<WaveConfig> list = new ArrayList<>();
 
-        EnemyType tank = new EnemyType("Besouro", 20, 23f, "src/assets/beetle.png", 47, 23, EnemyCategory.GROUND, 20);
-        EnemyType basic = new EnemyType("Formiga", 10, 30f, "src/assets/ant.png", 31, 15, EnemyCategory.GROUND, 15);
+        EnemyType tank = new EnemyType("Besouro", 30, 23f, "src/assets/beetle.png", 47, 23, EnemyCategory.GROUND, 20);
+        EnemyType basic = new EnemyType("Formiga", 14, 30f, "src/assets/ant.png", 31, 15, EnemyCategory.GROUND, 15);
         EnemyType fast = new EnemyType("Abelha", 6, 50f, "src/assets/bee.png", 34, 33, EnemyCategory.AIR, 10);
         fast.setFlipHorizontal(true);
         basic.setFlipHorizontal(true);
