@@ -23,22 +23,31 @@ public class DefaultWaves {
 
         EnemyGroup w2 = new EnemyGroup();
         for (int i = 0; i < 8; i++) {
-            w2.add(new EnemySpawn(fast, 0, i * 1500));
+            w2.add(new EnemySpawn(fast, 0, i * 1000));
         }
         list.add(new WaveConfig(2, 15000, w2));
 
         EnemyGroup w3 = new EnemyGroup();
         for (int i = 0; i < 10; i++) {
             if (i % 2 == 0) {
-                w3.add(new EnemySpawn(fast, 0, i * 1500));
+                w3.add(new EnemySpawn(fast, 0, i * 1000));
             } else if (i % 3 == 0) {
-                w3.add(new EnemySpawn(tank, 0, i * 1500));
+                w3.add(new EnemySpawn(tank, 0, i * 2000));
             } else {
                 w3.add(new EnemySpawn(basic, 0, i * 1500));
             }
-            
         }
-        list.add(new WaveConfig(2, 15000, w3));
+        
+            list.add(new WaveConfig(2, 15000, w3));
+
+
+        EnemyGroup w4 = new EnemyGroup();
+        for (int i = 0; i < 7; i++) {
+            w4.add(new EnemySpawn(tank, 0, i * 900));
+        }
+        list.add(new WaveConfig(2, 15000, w4));
+
+        
 
         return list;
     }
