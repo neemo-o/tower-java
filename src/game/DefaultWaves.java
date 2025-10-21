@@ -7,9 +7,9 @@ public class DefaultWaves {
     public static List<WaveConfig> create() {
         List<WaveConfig> list = new ArrayList<>();
 
-        EnemyType tank = new EnemyType("Besouro", 30, 23f, "src/assets/beetle.png", 47, 23, EnemyCategory.GROUND, 20);
-        EnemyType basic = new EnemyType("Formiga", 14, 30f, "src/assets/ant.png", 31, 15, EnemyCategory.GROUND, 15);
-        EnemyType fast = new EnemyType("Abelha", 6, 50f, "src/assets/bee.png", 34, 33, EnemyCategory.AIR, 10);
+        EnemyType tank = new EnemyType("Besouro", 40, 30f, "src/assets/beetle.png", 47, 23, EnemyCategory.GROUND, 15);
+        EnemyType basic = new EnemyType("Formiga", 16, 40f, "src/assets/ant.png", 31, 15, EnemyCategory.GROUND, 5);
+        EnemyType fast = new EnemyType("Abelha", 9, 50f, "src/assets/bee.png", 34, 33, EnemyCategory.AIR, 10);
         fast.setFlipHorizontal(true);
         basic.setFlipHorizontal(true);
         tank.setFlipHorizontal(true);
@@ -65,11 +65,11 @@ public class DefaultWaves {
         EnemyGroup w7 = new EnemyGroup();
         for (int i = 0; i < 32; i++) {
             if (i % 2 == 0) {
-                w7.add(new EnemySpawn(fast, 0, i * 3000));
+                w7.add(new EnemySpawn(fast, 0, i * 2000));
             } else if (i % 3 == 0) {
-                w7.add(new EnemySpawn(tank, 0, i * 2000));
+                w7.add(new EnemySpawn(tank, 0, i * 1500));
             } else {
-                w7.add(new EnemySpawn(basic, 0, i * 3000));
+                w7.add(new EnemySpawn(basic, 0, i * 2000));
             }
         }
         
