@@ -1,59 +1,59 @@
 package game;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.util.List;
-
 import javax.swing.ImageIcon;
 
 public class Tower {
     public enum Tipo { NORMAL, AIR, FAST }
 
-	public final Tipo tipo;
-	public final Point position;
-	public float rangeRadius;
-	public int damage;
-	public float fireRatePerSecond;
-	public Image image;
+    public final Tipo tipo;
+    public final Point position;
+    public float rangeRadius;
+    public int damage;
+    public float fireRatePerSecond;
+    public Image image;
     public int width = 32;
     public int height = 32;
     public String displayName;
-    public int cost; // custo da torre
+    public int cost;
 
-	private float fireCooldown;
+    private float fireCooldown;
 
+    // mesma tática da torre. angulo em radiano
+    private float rotationAngle = 0f;
 
-	// TODO: ramon fazer a rotação do personagem ao atirar
     public Tower(Tipo tipo, Point position) {
-		this.tipo = tipo;
-		this.position = position;
-		this.image = new ImageIcon("src/assets/tower_test.png").getImage();
-		switch (tipo) {
-			case NORMAL:
-				this.rangeRadius = 150f;
-				this.damage = 8;
-				this.fireRatePerSecond = 0.9f;
+        this.tipo = tipo;
+        this.position = position;
+        this.image = new ImageIcon("src/assets/tower_test.png").getImage();
+        switch (tipo) {
+            case NORMAL:
+                this.rangeRadius = 150f;
+                this.damage = 8;
+                this.fireRatePerSecond = 0.9f;
                 this.displayName = "Torre Normal";
                 this.cost = 80;
-				break;
-			case AIR:
-				this.rangeRadius = 130f;
-				this.damage = 3;
-				this.fireRatePerSecond = 1.4f;
+                break;
+            case AIR:
+                this.rangeRadius = 130f;
+                this.damage = 3;
+                this.fireRatePerSecond = 1.4f;
                 this.displayName = "Torre Aérea";
                 this.cost = 90;
-				break;
-			case FAST:
-				this.rangeRadius = 100f;
-				this.damage = 2;
-				this.fireRatePerSecond = 2.7f;
+                break;
+            case FAST:
+                this.rangeRadius = 100f;
+                this.damage = 2;
+                this.fireRatePerSecond = 2.7f;
                 this.displayName = "Torre Rápida";
                 this.cost = 75;
-				break;
-		}
-		this.fireCooldown = 0f;
-	}
+                break;
+        }
+        this.fireCooldown = 0f;
+    }
 
-    
     public static int getCost(Tipo tipo) {
         if (tipo == null) return 0;
         switch (tipo) {
@@ -64,62 +64,76 @@ public class Tower {
         }
     }
 
-	public void update(float deltaSeconds, List<Enemy> enemies, List<TowerProjectile> outProjectiles) {
-		fireCooldown -= deltaSeconds;
-		if (fireCooldown > 0f) return;
+    public void update(float deltaSeconds, List<Enemy> enemies, List<TowerProjectile> outProjectiles) {
+        fireCooldown -= deltaSeconds;
+        if (fireCooldown > 0f) return;
 
-		Enemy target = pickTarget(enemies);
-		if (target != null) {
-			float dirX = target.getX() - position.x;
-			float dirY = target.getY() - position.y;
-			float dist = (float)Math.sqrt(dirX*dirX + dirY*dirY);
-			if (dist > 0f) {
-				float vx = (dirX / dist) * 300f;
-				float vy = (dirY / dist) * 300f;
-				outProjectiles.add(new TowerProjectile(position.x, position.y, vx, vy, damage));
-				fireCooldown = 1f / fireRatePerSecond;
-			}
-		}
-	}
+		// pronto nemas, tua torre agora gira e olha pros bixin
+        Enemy target = pickTarget(enemies);
+        if (target != null) {
+            float dirX = target.getX() - position.x;
+            float dirY = target.getY() - position.y;
+            float dist = (float)Math.sqrt(dirX * dirX + dirY * dirY);
+            if (dist > 0f) {
+                float vx = (dirX / dist) * 300f;
+                float vy = (dirY / dist) * 300f;
 
-	private Enemy pickTarget(List<Enemy> enemies) {
-		Enemy best = null;
-		float bestDist = Float.MAX_VALUE;
-		for (Enemy e : enemies) {
-			if (!canTarget(e)) continue;
-			float dx = e.getX() - position.x;
-			float dy = e.getY() - position.y;
-			float d2 = dx*dx + dy*dy;
-			if (d2 <= rangeRadius * rangeRadius && d2 < bestDist) {
-				best = e;
-				bestDist = d2;
-			}
-		}
-		return best;
-	}
+                // calculo do angulo de movimentação pra torre olhar o angulo de disparo
+                rotationAngle = (float)Math.atan2(dirY, dirX);
 
-	private boolean canTarget(Enemy e) {
-		if (tipo == Tipo.AIR) return true; // Torres aéreas podem atacar qualquer inimigo
-		return e.getType().category == EnemyCategory.GROUND; // Torres normais e rápidas só atacam terrestres
-	}
+                outProjectiles.add(new TowerProjectile(position.x, position.y, vx, vy, damage));
+                fireCooldown = 1f / fireRatePerSecond;
+            }
+        }
+    }
+
+    private Enemy pickTarget(List<Enemy> enemies) {
+        Enemy best = null;
+        float bestDist = Float.MAX_VALUE;
+        for (Enemy e : enemies) {
+            if (!canTarget(e)) continue;
+            float dx = e.getX() - position.x;
+            float dy = e.getY() - position.y;
+            float d2 = dx * dx + dy * dy;
+            if (d2 <= rangeRadius * rangeRadius && d2 < bestDist) {
+                best = e;
+                bestDist = d2;
+            }
+        }
+        return best;
+    }
+
+    private boolean canTarget(Enemy e) {
+        if (tipo == Tipo.AIR) return true;
+        return e.getType().category == EnemyCategory.GROUND;
+    }
 
     public void render(Graphics2D g, boolean showRangeOutline) {
-		int drawX = position.x - width/2;
-		int drawY = position.y - height/2;
-		if (image != null) {
-			g.drawImage(image, drawX, drawY, width, height, null);
-		} else {
+        int drawX = position.x;
+        int drawY = position.y;
+        int halfW = width / 2;
+        int halfH = height / 2;
+
+        if (image != null) {
+            // salva o estado original
+            AffineTransform original = g.getTransform();
+
+            // aplica rotação
+            g.rotate(rotationAngle, drawX, drawY);
+            g.drawImage(image, drawX - halfW, drawY - halfH, width, height, null);
+
+            // restaura a forma original
+            g.setTransform(original);
+        } else {
             g.setColor(new Color(30, 144, 255));
-            g.fillRect(drawX, drawY, width, height);
+            g.fillRect(drawX - halfW, drawY - halfH, width, height);
             g.setColor(Color.WHITE);
-            g.drawRect(drawX, drawY, width, height);
-		}
+            g.drawRect(drawX - halfW, drawY - halfH, width, height);
+        }
+
         if (showRangeOutline) {
             g.setColor(new Color(0, 200, 255));
-            g.drawOval(Math.round(position.x - rangeRadius), Math.round(position.y - rangeRadius), Math.round(rangeRadius*2), Math.round(rangeRadius*2));
+            g.drawOval(Math.round(position.x - rangeRadius), Math.round(position.y - rangeRadius), Math.round(rangeRadius * 2), Math.round(rangeRadius * 2));
         }
-	}
-
+    }
 }
-
-
