@@ -88,6 +88,12 @@ public class DefaultWaves {
         
             list.add(new WaveConfig(2, 15000, w8));
 
+            EnemyGroup w9 = new EnemyGroup();
+        for (int i = 0; i < 18; i++) {
+            w9.add(new EnemySpawn(tank, 0, i * 300));
+        }
+        list.add(new WaveConfig(2, 15000, w9));
+
         return list;
     }
 }
