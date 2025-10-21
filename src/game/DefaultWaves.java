@@ -75,6 +75,19 @@ public class DefaultWaves {
         
             list.add(new WaveConfig(2, 15000, w7));
 
+             EnemyGroup w8 = new EnemyGroup();
+        for (int i = 0; i < 36; i++) {
+            if (i % 2 == 0) {
+                w8.add(new EnemySpawn(fast, 0, i * 400));
+            } else if (i % 3 == 0) {
+                w8.add(new EnemySpawn(tank, 0, i * 600));
+            } else {
+                w8.add(new EnemySpawn(basic, 0, i * 500));
+            }
+        }
+        
+            list.add(new WaveConfig(2, 15000, w8));
+
         return list;
     }
 }
