@@ -16,14 +16,14 @@ public class DefaultWaves {
         
 
         EnemyGroup w1 = new EnemyGroup();
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 9; i++) {
             w1.add(new EnemySpawn(basic, 0, i * 1500));
         }
         list.add(new WaveConfig(2, 15000, w1));
 
         EnemyGroup w2 = new EnemyGroup();
         for (int i = 0; i < 8; i++) {
-            w2.add(new EnemySpawn(fast, 0, i * 1000));
+            w2.add(new EnemySpawn(fast, 0, i * 1300));
         }
         list.add(new WaveConfig(2, 15000, w2));
 
