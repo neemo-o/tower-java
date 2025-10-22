@@ -1,7 +1,6 @@
 package util;
 
 import javax.sound.sampled.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,8 +16,8 @@ public class Sound {
         if (!soundEnabled) return null;
         
         try {
-            File file = new File("src/assets/" + fileName);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(
+                    getClass().getResourceAsStream("/assets/" + fileName));
             Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
             
@@ -47,8 +46,8 @@ public class Sound {
         if (!soundEnabled) return null;
         
         try {
-            File file = new File("src/assets/" + fileName);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(
+                    getClass().getResourceAsStream("/assets/" + fileName));
             Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
             

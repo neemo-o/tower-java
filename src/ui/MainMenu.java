@@ -45,7 +45,7 @@ public class MainMenu {
         JButton startButton = createMenuButton(
                 "src/assets/PlayBtn.png",
                 "src/assets/PlayClick.png",
-                _ -> {
+                e -> {
                     mediator.notify(this, "startGame");
                     frame.dispose();
                 });
@@ -53,7 +53,7 @@ public class MainMenu {
         JButton exitButton = createMenuButton(
                 "src/assets/ExitBtn.png",
                 "src/assets/ExitClick.png",
-                _ -> {
+                e -> {
                     System.exit(0);
                 });
 
