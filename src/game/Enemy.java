@@ -19,9 +19,9 @@ public class Enemy {
         this.reward = type.reward;
     }
 
-    // um pouco bugado, mas funciona
     public void updateTowards(Point target, float deltaSeconds) {
-        if (reachedTarget) return;
+        if (reachedTarget)
+            return;
         float dx = target.x - x;
         float dy = target.y - y;
         float dist = (float) Math.sqrt(dx * dx + dy * dy);
@@ -40,7 +40,6 @@ public class Enemy {
         int drawY = Math.round(y) - type.height / 2;
         if (type.image != null) {
             if (type.isFlipHorizontal()) {
-                // Desenha espelhado no eixo X
                 g.drawImage(type.image, drawX + type.width, drawY, -type.width, type.height, null);
             } else {
                 g.drawImage(type.image, drawX, drawY, type.width, type.height, null);
@@ -54,8 +53,6 @@ public class Enemy {
             }
         }
 
-
-        // vida
         float healthRatio = Math.max(0f, Math.min(1f, health / (float) type.maxHealth));
         int barW = type.width;
         int barH = 4;
@@ -66,14 +63,13 @@ public class Enemy {
         g.setColor(Color.BLACK);
         g.drawRect(drawX, drawY - 6, barW, barH);
 
-        // texto HP
         String hpText = health + "/" + type.maxHealth + " HP";
         Font old = g.getFont();
         Font f = old.deriveFont(Font.BOLD, 10f);
         g.setFont(f);
         FontMetrics fm = g.getFontMetrics();
         int tx = drawX + (barW - fm.stringWidth(hpText)) / 2;
-        int ty = drawY - 6 - 2; // acima da barra
+        int ty = drawY - 6 - 2;
         g.setColor(Color.BLACK);
         g.drawString(hpText, tx, ty);
         g.setFont(old);
@@ -82,12 +78,18 @@ public class Enemy {
     public boolean hasReachedTarget() { return reachedTarget; }
     public void markReached() { reachedTarget = true; }
     public int getHealth() { return health; }
-    public void damage(int amount) { health = Math.max(0, health - amount); }
+
+    public void damage(int amount) {
+        health = Math.max(0, health - amount);
+    }
+
+    public DamageIndicator createDamageIndicator(int damage) {
+        return new DamageIndicator(x, y - type.height / 2, damage, new Color(255, 100, 100));
+    }
+
     public boolean isDead() { return health <= 0; }
     public float getX() { return x; }
     public float getY() { return y; }
     public EnemyType getType() { return type; }
     public int getReward() { return reward; }
 }
-
-

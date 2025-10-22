@@ -14,9 +14,8 @@ public class TowerProjectile {
     private final Image image;
     private final int size = 24;
     private boolean expired = false;
-
-    //angulo em radianos.
-    private float rotationAngle = 0f; 
+    private float rotationAngle = 0f;
+    private Enemy hitEnemy = null;
 
     public TowerProjectile(float x, float y, float vx, float vy, int damage) {
         this.x = x;
@@ -34,12 +33,11 @@ public class TowerProjectile {
     }
 
     public void update(float delta, List<Enemy> enemies) {
-        if (expired) return;
+        if (expired)
+            return;
         x += vx * delta;
         y += vy * delta;
-
-        // pronto nemo, tua sandalia tá rodando agora igual piao
-        rotationAngle += 30f * delta; // ajustes pra ficar rapidin. quanto maior F, mais rapido a rotaçao
+        rotationAngle += 30f * delta;
 
         for (Enemy e : enemies) {
             int ex = Math.round(e.getX()) - e.getType().width / 2;
@@ -48,6 +46,7 @@ public class TowerProjectile {
             int eh = e.getType().height;
             if (x >= ex && x <= ex + ew && y >= ey && y <= ey + eh) {
                 e.damage(damage);
+                hitEnemy = e;
                 expired = true;
                 break;
             }
@@ -58,20 +57,23 @@ public class TowerProjectile {
         return expired;
     }
 
+    public Enemy getHitEnemy() {
+        return hitEnemy;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
     public void render(Graphics2D g) {
         int drawX = Math.round(x);
         int drawY = Math.round(y);
         int halfSize = size / 2;
 
         if (image != null) {
-            // so salvando o estado original pra caso de bug
             AffineTransform originalTransform = g.getTransform();
-
-            // isso deu trabalho, mas faz rotacionar a imagem
             g.rotate(rotationAngle, drawX, drawY);
             g.drawImage(image, drawX - halfSize, drawY - halfSize, size, size, null);
-
-            // traz de volta o estado origininal pra num dar ruim
             g.setTransform(originalTransform);
         } else {
             g.setColor(Color.YELLOW);

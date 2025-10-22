@@ -5,8 +5,12 @@ import java.awt.geom.AffineTransform;
 import java.util.List;
 import javax.swing.ImageIcon;
 
+import util.Sound;
+
 public class Tower {
-    public enum Tipo { NORMAL, AIR, FAST }
+    public enum Tipo {
+        NORMAL, AIR, FAST
+    }
 
     public final Tipo tipo;
     public final Point position;
@@ -20,8 +24,6 @@ public class Tower {
     public int cost;
 
     private float fireCooldown;
-
-    // mesma tática da torre. angulo em radiano
     private float rotationAngle = 0f;
 
     public Tower(Tipo tipo, Point position) {
@@ -55,34 +57,39 @@ public class Tower {
     }
 
     public static int getCost(Tipo tipo) {
-        if (tipo == null) return 0;
+        if (tipo == null)
+            return 0;
         switch (tipo) {
-            case NORMAL: return 60;
-            case AIR:    return 100;
-            case FAST:   return 80;
-            default:     return 0;
+            case NORMAL:
+                return 60;
+            case AIR:
+                return 100;
+            case FAST:
+                return 80;
+            default:
+                return 0;
         }
     }
 
     public void update(float deltaSeconds, List<Enemy> enemies, List<TowerProjectile> outProjectiles) {
         fireCooldown -= deltaSeconds;
-        if (fireCooldown > 0f) return;
+        if (fireCooldown > 0f)
+            return;
 
-		// pronto nemas, tua torre agora gira e olha pros bixin
         Enemy target = pickTarget(enemies);
         if (target != null) {
             float dirX = target.getX() - position.x;
             float dirY = target.getY() - position.y;
-            float dist = (float)Math.sqrt(dirX * dirX + dirY * dirY);
+            float dist = (float) Math.sqrt(dirX * dirX + dirY * dirY);
             if (dist > 0f) {
                 float vx = (dirX / dist) * 300f;
                 float vy = (dirY / dist) * 300f;
-
-                // calculo do angulo de movimentação pra torre olhar o angulo de disparo
-                rotationAngle = (float)Math.atan2(dirY, dirX);
-
+                rotationAngle = (float) Math.atan2(dirY, dirX);
                 outProjectiles.add(new TowerProjectile(position.x, position.y, vx, vy, damage));
                 fireCooldown = 1f / fireRatePerSecond;
+
+                Sound sound = new Sound();
+                sound.play("projetil.wav", 0.45f);
             }
         }
     }
@@ -91,7 +98,8 @@ public class Tower {
         Enemy best = null;
         float bestDist = Float.MAX_VALUE;
         for (Enemy e : enemies) {
-            if (!canTarget(e)) continue;
+            if (!canTarget(e))
+                continue;
             float dx = e.getX() - position.x;
             float dy = e.getY() - position.y;
             float d2 = dx * dx + dy * dy;
@@ -104,7 +112,8 @@ public class Tower {
     }
 
     private boolean canTarget(Enemy e) {
-        if (tipo == Tipo.AIR) return true;
+        if (tipo == Tipo.AIR)
+            return true;
         return e.getType().category == EnemyCategory.GROUND;
     }
 
@@ -115,14 +124,9 @@ public class Tower {
         int halfH = height / 2;
 
         if (image != null) {
-            // salva o estado original
             AffineTransform original = g.getTransform();
-
-            // aplica rotação
             g.rotate(rotationAngle, drawX, drawY);
             g.drawImage(image, drawX - halfW, drawY - halfH, width, height, null);
-
-            // restaura a forma original
             g.setTransform(original);
         } else {
             g.setColor(new Color(30, 144, 255));
@@ -133,7 +137,8 @@ public class Tower {
 
         if (showRangeOutline) {
             g.setColor(new Color(0, 200, 255));
-            g.drawOval(Math.round(position.x - rangeRadius), Math.round(position.y - rangeRadius), Math.round(rangeRadius * 2), Math.round(rangeRadius * 2));
+            g.drawOval(Math.round(position.x - rangeRadius), Math.round(position.y - rangeRadius),
+                    Math.round(rangeRadius * 2), Math.round(rangeRadius * 2));
         }
     }
 }

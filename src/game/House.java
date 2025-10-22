@@ -22,6 +22,10 @@ public class House {
         health = Math.max(0, health - amount);
     }
 
+    public DamageIndicator createDamageIndicator(int damage) {
+        return new DamageIndicator(position.x, position.y - 40, damage, new Color(255, 50, 50));
+    }
+
     public boolean isDestroyed() {
         return health <= 0;
     }
@@ -29,9 +33,7 @@ public class House {
     public void render(Graphics2D g) {
         int size = 20;
         int y = position.y - size / 2;
-        
 
-        // Barra de vida acima
         int barX = position.x - barWidth / 4;
         int barY = y - 225;
         float ratio = Math.max(0f, Math.min(1f, health / (float) maxHealth));
@@ -53,5 +55,3 @@ public class House {
         g.setFont(old);
     }
 }
-
-
