@@ -6,6 +6,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import util.Sound;
+import util.ResourceLoader;
 
 public class Tower {
     public enum Tipo {
@@ -29,7 +30,7 @@ public class Tower {
     public Tower(Tipo tipo, Point position) {
         this.tipo = tipo;
         this.position = position;
-        this.image = new ImageIcon("src/assets/tower_test.png").getImage();
+        this.image = ResourceLoader.loadImage("tower_test.png");
         switch (tipo) {
             case NORMAL:
                 this.rangeRadius = 150f;

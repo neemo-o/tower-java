@@ -2,6 +2,7 @@ package game;
 
 import javax.swing.*;
 import java.awt.*;
+import util.ResourceLoader;
 
 public class EnemyType {
     public final String name;
@@ -26,7 +27,7 @@ public class EnemyType {
         this.name = name;
         this.maxHealth = maxHealth;
         this.velocidade = velocidade;
-        ImageIcon icon = imagePath != null ? new ImageIcon(imagePath) : null;
+        ImageIcon icon = imagePath != null ? ResourceLoader.loadImageIcon(imagePath) : null;
         this.image = icon != null ? icon.getImage() : null;
         this.width = width;
         this.height = height;
@@ -43,5 +44,3 @@ public class EnemyType {
         return this;
     }
 }
-
-

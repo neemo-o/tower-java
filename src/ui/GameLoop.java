@@ -2,6 +2,7 @@ package ui;
 
 import main.Mediator;
 import util.Sound;
+import util.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -104,7 +105,7 @@ public class GameLoop {
 
 	public void start() {
 		frame = new JFrame("InsecTD");
-		frame.setIconImage(new ImageIcon("src/assets/logo.png").getImage());
+		frame.setIconImage(ResourceLoader.loadImage("logo.png"));
 		frame.setSize(800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
@@ -320,10 +321,10 @@ public class GameLoop {
 
 		public GamePanel(WaveController wc, House house, GameLoop loop) {
 			setDoubleBuffered(true);
-			background = new ImageIcon("src/assets/GameCenario.png").getImage();
+			background = ResourceLoader.loadImage("GameCenario.png");
 			Image tmpCoin = null;
 			try {
-				Image img = new ImageIcon("src/assets/coin.png").getImage();
+				Image img = ResourceLoader.loadImage("coin.png");
 				tmpCoin = img;
 			} catch (Exception ex) {
 				tmpCoin = null;

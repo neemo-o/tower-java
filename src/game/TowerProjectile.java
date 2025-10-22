@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.List;
+import util.ResourceLoader;
 
 public class TowerProjectile {
     private float x;
@@ -25,7 +26,7 @@ public class TowerProjectile {
         this.damage = damage;
         Image tmp;
         try {
-            tmp = new ImageIcon("src/assets/projectile.png").getImage();
+            tmp = ResourceLoader.loadImage("projectile.png");
         } catch (Exception e) {
             tmp = null;
         }
