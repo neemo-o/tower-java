@@ -3,7 +3,6 @@ package game;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.List;
-import javax.swing.ImageIcon;
 
 import util.Sound;
 import util.ResourceLoader;

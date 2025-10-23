@@ -291,7 +291,7 @@ public class GameLoop {
 
 			if (!waveController.getActiveEnemies().isEmpty()) {
 				Enemy lastEnemy = waveController.getActiveEnemies().get(waveController.getActiveEnemies().size() - 1);
-				coinIndicators.add(lastEnemy.getX(), lastEnemy.getY() - 20, totalReward);
+				coinIndicators.add(lastEnemy.getX(), lastEnemy.getY() - 5, totalReward);
 			}
 
 		}
@@ -301,7 +301,12 @@ public class GameLoop {
 			if (transitionTimer >= transitionDuration) {
 				transitioning = false;
 				waveController.startNextWave();
-				money += 50; // ramon: bonus por iniciar nova wave TODO
+				if (waveController.getCurrentWaveNumber() >= 2) {
+					money += 50; // ramon: bonus por iniciar nova wave TODO
+
+					coinIndicators.add(frame.getHeight() / 2, frame.getWidth() / 2, 50);
+				}
+
 			}
 		} else {
 			if (waveController.isReadyForNextWave()) {

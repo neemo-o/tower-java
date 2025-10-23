@@ -58,5 +58,11 @@ public class TowerPreview {
         g.setComposite(oldComp);
         g.setColor(oldColor);
         
-    }
+
+        
+        }
+
+        public Tower.Tipo getTipo(Tower.Tipo type) {
+            return towerType;
+        }
 }

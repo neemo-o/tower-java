@@ -38,7 +38,7 @@ public class CoinIndicator {
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
 
         Font old = g.getFont();
-        Font f = old.deriveFont(Font.BOLD, 16f);
+        Font f = old.deriveFont(Font.BOLD, 26f);
         g.setFont(f);
 
         FontMetrics fm = g.getFontMetrics();
