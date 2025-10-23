@@ -3,7 +3,6 @@ package game;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.List;
-import util.ResourceLoader;
 
 public class TowerProjectile {
     private float x;
@@ -17,19 +16,13 @@ public class TowerProjectile {
     private float rotationAngle = 0f;
     private Enemy hitEnemy = null;
 
-    public TowerProjectile(float x, float y, float vx, float vy, int damage) {
+    public TowerProjectile(float x, float y, float vx, float vy, int damage, Image projectileImage) {
         this.x = x;
         this.y = y;
         this.vx = vx;
         this.vy = vy;
         this.damage = damage;
-        Image tmp;
-        try {
-            tmp = ResourceLoader.loadImage("projectile.png");
-        } catch (Exception e) {
-            tmp = null;
-        }
-        this.image = tmp;
+        this.image = projectileImage;
     }
 
     public void update(float delta, List<Enemy> enemies) {

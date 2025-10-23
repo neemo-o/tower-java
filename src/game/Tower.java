@@ -18,39 +18,45 @@ public class Tower {
     public int damage;
     public float fireRatePerSecond;
     public Image image;
-    public int width = 32;
-    public int height = 32;
+    public Image projectileImage;
+    public int width = 45;
+    public int height = 45;
     public String displayName;
     public int cost;
 
     private float fireCooldown;
-    private float rotationAngle = 0f;
 
     public Tower(Tipo tipo, Point position) {
         this.tipo = tipo;
         this.position = position;
-        this.image = ResourceLoader.loadImage("tower_test.png");
+
         switch (tipo) {
             case NORMAL:
                 this.rangeRadius = 150f;
                 this.damage = 8;
                 this.fireRatePerSecond = 0.9f;
-                this.displayName = "Torre Normal";
+                this.displayName = "Estilingue";
                 this.cost = 80;
+                this.image = ResourceLoader.loadImage("tower_pedra.png");
+                this.projectileImage = ResourceLoader.loadImage("pedra.png");
                 break;
             case AIR:
                 this.rangeRadius = 130f;
                 this.damage = 3;
                 this.fireRatePerSecond = 1.4f;
-                this.displayName = "Torre Aérea";
+                this.displayName = "Chinelada";
                 this.cost = 90;
+                this.image = ResourceLoader.loadImage("tower_test.png");
+                this.projectileImage = ResourceLoader.loadImage("projectile.png");
                 break;
             case FAST:
-                this.rangeRadius = 100f;
-                this.damage = 2;
-                this.fireRatePerSecond = 2.7f;
-                this.displayName = "Torre Rápida";
-                this.cost = 75;
+                this.rangeRadius = 120f;
+                this.damage = 5;
+                this.fireRatePerSecond = 3.0f;
+                this.displayName = "Anti-Inseto";
+                this.cost = 120;
+                this.image = ResourceLoader.loadImage("tesla.png");
+                this.projectileImage = null; // Usará efeito de raio
                 break;
         }
         this.fireCooldown = 0f;
@@ -61,35 +67,45 @@ public class Tower {
             return 0;
         switch (tipo) {
             case NORMAL:
-                return 60;
-            case AIR:
-                return 100;
-            case FAST:
                 return 80;
+            case AIR:
+                return 90;
+            case FAST:
+                return 120;
             default:
                 return 0;
         }
     }
 
-    public void update(float deltaSeconds, List<Enemy> enemies, List<TowerProjectile> outProjectiles) {
+    public void update(float deltaSeconds, List<Enemy> enemies, List<TowerProjectile> outProjectiles, List<LightningEffect> outLightningEffects) {
         fireCooldown -= deltaSeconds;
         if (fireCooldown > 0f)
             return;
 
         Enemy target = pickTarget(enemies);
         if (target != null) {
-            float dirX = target.getX() - position.x;
-            float dirY = target.getY() - position.y;
-            float dist = (float) Math.sqrt(dirX * dirX + dirY * dirY);
-            if (dist > 0f) {
-                float vx = (dirX / dist) * 300f;
-                float vy = (dirY / dist) * 300f;
-                rotationAngle = (float) Math.atan2(dirY, dirX);
-                outProjectiles.add(new TowerProjectile(position.x, position.y, vx, vy, damage));
+            if (tipo == Tipo.FAST) {
+                // Torre Anti-Inseto usa raios
+                outLightningEffects.add(new LightningEffect(position, target, damage));
+                target.damage(damage);
                 fireCooldown = 1f / fireRatePerSecond;
 
                 Sound sound = new Sound();
-                sound.play("projetil.wav", 0.45f);
+                sound.play("projetil.wav", 0.6f);
+            } else {
+                // Torres normais usam projétils
+                float dirX = target.getX() - position.x;
+                float dirY = target.getY() - position.y;
+                float dist = (float) Math.sqrt(dirX * dirX + dirY * dirY);
+                if (dist > 0f) {
+                    float vx = (dirX / dist) * 300f;
+                    float vy = (dirY / dist) * 300f;
+                    outProjectiles.add(new TowerProjectile(position.x, position.y, vx, vy, damage, projectileImage));
+                    fireCooldown = 1f / fireRatePerSecond;
+
+                    Sound sound = new Sound();
+                    sound.play("projetil.wav", 0.45f);
+                }
             }
         }
     }
@@ -125,7 +141,6 @@ public class Tower {
 
         if (image != null) {
             AffineTransform original = g.getTransform();
-            g.rotate(rotationAngle, drawX, drawY);
             g.drawImage(image, drawX - halfW, drawY - halfH, width, height, null);
             g.setTransform(original);
         } else {

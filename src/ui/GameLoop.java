@@ -27,19 +27,20 @@ public class GameLoop {
 	private Color waveIndicatorColor = Color.WHITE;
 	private Font waveTransitionFont = new Font("Arial", Font.BOLD, 36);
 	private Color waveTransitionColor = Color.YELLOW;
-	private int money = 100;
+	private int money = 200;
 	private Font moneyFont = new Font("Arial", Font.BOLD, 16);
 	private Color moneyTextColor = Color.WHITE;
 	private Color moneyShadowColor = Color.BLACK;
 	private final java.util.List<Tower> towers = new ArrayList<>();
 	private final java.util.List<TowerProjectile> projectiles = new ArrayList<>();
+	private final java.util.List<LightningEffect> lightningEffects = new ArrayList<>();
 	private Rectangle placementArea = new Rectangle(120, 250, 200, 150);
 	private Tower.Tipo selectedTowerKind = null;
 	private Point mousePos = new Point(0, 0);
 	private Tower hoveredTower = null;
-	private final Rectangle btnNormal = new Rectangle(10, 100, 90, 70);
-	private final Rectangle btnAir = new Rectangle(110, 100, 90, 70);
-	private final Rectangle btnFast = new Rectangle(210, 100, 90, 70);
+	private final Rectangle btnNormal = new Rectangle(10, 100, 90, 85);
+	private final Rectangle btnAir = new Rectangle(110, 100, 90, 85);
+	private final Rectangle btnFast = new Rectangle(210, 100, 90, 85);
 	private TowerPreview currentPreview;
 	private Rectangle selectedTowerBtn = null;
 	private final DamageIndicator.Manager damageIndicators = new DamageIndicator.Manager();
@@ -67,9 +68,16 @@ public class GameLoop {
 		FontMetrics fm = g2.getFontMetrics();
 
 		int tx = r.x + (r.width - fm.stringWidth(label)) / 2;
-		int ty = r.y + 20;
+		int ty = r.y + 18;
 		g2.setColor(Color.WHITE);
 		g2.drawString(label, tx, ty);
+
+		if (temp.image != null) {
+			int iconSize = 24;
+			int ix = r.x + (r.width - iconSize) / 2;
+			int iy = r.y + 28;
+			g2.drawImage(temp.image, ix, iy, iconSize, iconSize, null);
+		}
 
 		String costText = cost + " $";
 		g2.setFont(new Font("Arial", Font.BOLD, 14));
@@ -80,13 +88,6 @@ public class GameLoop {
 		Color costColor = money >= cost ? new Color(100, 255, 100) : new Color(255, 100, 100);
 		g2.setColor(costColor);
 		g2.drawString(costText, tx, ty);
-
-		if (temp.image != null) {
-			int iconSize = 28;
-			int ix = r.x + (r.width - iconSize) / 2;
-			int iy = r.y + 25;
-			g2.drawImage(temp.image, ix, iy, iconSize, iconSize, null);
-		}
 
 		g2.setFont(oldFont);
 		g2.setColor(old);
@@ -249,7 +250,7 @@ public class GameLoop {
 
 		if (!transitioning) {
 			for (Tower t : towers) {
-				t.update(delta, waveController.getActiveEnemies(), projectiles);
+				t.update(delta, waveController.getActiveEnemies(), projectiles, lightningEffects);
 			}
 
 			Iterator<TowerProjectile> it = projectiles.iterator();
@@ -262,6 +263,15 @@ public class GameLoop {
 						damageIndicators.add(hitEnemy.getX(), hitEnemy.getY(), p.getDamage(), new Color(255, 100, 100));
 					}
 					it.remove();
+				}
+			}
+
+			Iterator<LightningEffect> lightningIt = lightningEffects.iterator();
+			while (lightningIt.hasNext()) {
+				LightningEffect lightning = lightningIt.next();
+				lightning.update(delta);
+				if (lightning.isExpired()) {
+					lightningIt.remove();
 				}
 			}
 		}
@@ -363,6 +373,9 @@ public class GameLoop {
 			}
 			for (TowerProjectile p : loopRef.projectiles) {
 				p.render(g2);
+			}
+			for (LightningEffect lightning : loopRef.lightningEffects) {
+				lightning.render(g2);
 			}
 
 			loopRef.damageIndicators.render(g2);
