@@ -27,7 +27,7 @@ public class GameLoop {
 	private Color waveIndicatorColor = Color.WHITE;
 	private Font waveTransitionFont = new Font("Arial", Font.BOLD, 36);
 	private Color waveTransitionColor = Color.YELLOW;
-	private int money = 200;
+	private int money = 100;
 	private Font moneyFont = new Font("Arial", Font.BOLD, 16);
 	private Color moneyTextColor = Color.WHITE;
 	private Color moneyShadowColor = Color.BLACK;
