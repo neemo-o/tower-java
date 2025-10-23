@@ -5,9 +5,20 @@ import util.Sound;
 import util.ResourceLoader;
 
 import javax.swing.*;
+
+import entities.*;
+import entities.enemy.Enemy;
+import entities.indicators.CoinIndicator;
+import entities.indicators.DamageIndicator;
+import entities.tower.LightningEffect;
+import entities.tower.Tower;
+import entities.tower.TowerPreview;
+import entities.tower.TowerProjectile;
+import entities.wave.DefaultWaves;
+import entities.wave.WaveController;
+
 import java.awt.event.*;
 import java.awt.*;
-import game.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
