@@ -1,7 +1,7 @@
 package entities.wave;
 
 import entities.enemy.EnemyType;
-
+// representa um evento de spawn de inimigo so
 public class SpawnEvent implements Comparable<SpawnEvent> {
     public final long spawnTimeMs;
     public final EnemyType type;
