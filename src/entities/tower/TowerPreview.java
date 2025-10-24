@@ -1,7 +1,7 @@
 package entities.tower;
 
 import java.awt.*;
-
+// Classe que representa a pré-visualização de uma torre antes de ser colocada no jogo. mais efeitos visuais
 public class TowerPreview {
     private final Tower.Tipo towerType;
     private final Point position;
