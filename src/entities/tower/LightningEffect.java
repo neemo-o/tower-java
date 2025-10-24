@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entities.enemy.Enemy;
-
+// adiçao visual de um efeitinho visual de raio muito massa. ta muito satisfatorio ver isso kkk
 public class LightningEffect {
     private final Point start;
     private final Point end;
