@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+// tudo isso aqui é pra mostrar os indicadores de moedas quando o inimigo morre, visualmente falando.
 public class CoinIndicator {
     private float x;
     private float y;
