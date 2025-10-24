@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.*;
 
 import entities.enemy.Enemy;
-
+// Controle das ondas de inimigos. aqui é delicado de mexer. pode explodir tudo ;-;
 public class WaveController {
     private final java.util.List<WaveConfig> waves = new ArrayList<>();
     private final java.util.List<Enemy> activeEnemies = new ArrayList<>();
