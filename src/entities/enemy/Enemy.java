@@ -3,7 +3,7 @@ package entities.enemy;
 import java.awt.*;
 
 import entities.indicators.DamageIndicator;
-
+// Criaçao geral dos inimigos e definiçao de seus tipos
 public class Enemy {
     private final EnemyType type;
     private float x;
