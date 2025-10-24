@@ -8,7 +8,7 @@ import entities.enemy.Enemy;
 import entities.enemy.EnemyCategory;
 import util.Sound;
 import util.ResourceLoader;
-
+// Classe que representa uma torre no jogo
 public class Tower {
     public enum Tipo {
         NORMAL, AIR, FAST
@@ -27,7 +27,7 @@ public class Tower {
     public int cost;
 
     private float fireCooldown;
-
+    // Construtor da torre, seus atributos dependendo do tipo, e interaçoes com inimigos
     public Tower(Tipo tipo, Point position) {
         this.tipo = tipo;
         this.position = position;
