@@ -3,7 +3,7 @@ package entities;
 import java.awt.*;
 
 import entities.indicators.DamageIndicator;
-
+// representa a casa que o jogador deve proteger. tem os atributo basicos do local que os inimigos tentam chegar.
 public class House {
     public Point position;
     public int maxHealth;
@@ -31,7 +31,7 @@ public class House {
     public boolean isDestroyed() {
         return health <= 0;
     }
-
+    // desenha a casa e sua barra de vida. visual puro
     public void render(Graphics2D g) {
         int size = 20;
         int y = position.y - size / 2;
