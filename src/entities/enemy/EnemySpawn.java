@@ -3,7 +3,7 @@ package entities.enemy;
 import java.util.List;
 
 import entities.wave.SpawnEvent;
-
+// representaçao de um inimigo especifico a ser gerado em um ponto especifico apos um delay especifico.(muito especifico nao acha?)
 public class EnemySpawn implements WaveComponent {
     private final EnemyType type;
     private final int spawnPointIndex; // 0 ou 1
