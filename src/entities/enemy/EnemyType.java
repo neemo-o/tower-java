@@ -3,7 +3,7 @@ package entities.enemy;
 import javax.swing.*;
 import java.awt.*;
 import util.ResourceLoader;
-
+// organizaçao dos tipos de inimigos e suas caracteristicas
 public class EnemyType {
     public final String name;
     public final int maxHealth;
