@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
+// somzinho porque ninguem merece jogo sem som né amigos e amigas?
 public class Sound {
     private static final Map<String, Clip> activeClips = new ConcurrentHashMap<>();
     private static final Map<String, Clip> loopClips = new ConcurrentHashMap<>();
