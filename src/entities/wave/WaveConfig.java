@@ -1,7 +1,7 @@
 package entities.wave;
 
 import entities.enemy.WaveComponent;
-
+// configura a wave de inimigos.
 public class WaveConfig {
     public final int waveNumber;
     public final long durationMs;
