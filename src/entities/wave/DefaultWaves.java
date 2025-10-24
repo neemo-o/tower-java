@@ -7,7 +7,7 @@ import entities.enemy.EnemyCategory;
 import entities.enemy.EnemyGroup;
 import entities.enemy.EnemySpawn;
 import entities.enemy.EnemyType;
-
+// criaçao das ondas. isso aqui deine o auge de todos os males, e o problema de todos os jogadores >:)
 public class DefaultWaves {
     public static List<WaveConfig> create() {
         List<WaveConfig> list = new ArrayList<>();
