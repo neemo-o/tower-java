@@ -324,7 +324,7 @@ public class GameLoop {
 				transitioning = false;
 				waveController.startNextWave();
 				if (waveController.getCurrentWaveNumber() >= 2) {
-					money += 50; // ramon: bonus por iniciar nova wave TODO
+					money += 20; // Gold por wave completada
 
 					coinIndicators.add(frame.getHeight() / 2, frame.getWidth() / 2, 50);
 				}
