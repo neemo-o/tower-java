@@ -5,7 +5,7 @@ import java.awt.geom.AffineTransform;
 import java.util.List;
 
 import entities.enemy.Enemy;
-
+// representa um projétil disparado por uma torre. suas animaçoes, tipos, detalhes visuais e lógicas de colisão com inimigos.
 public class TowerProjectile {
     private float x;
     private float y;
