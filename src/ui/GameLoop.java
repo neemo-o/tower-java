@@ -1,5 +1,6 @@
 package ui;
-
+// classe principal do jogo, gerencia o loop principal, atualiza entidades e renderiza a tela
+// jamais houve na historia, tanto import e private junto numa clase só tal qual nessa KKKK
 import main.Mediator;
 import util.Sound;
 import util.ResourceLoader;
@@ -61,7 +62,7 @@ public class GameLoop {
 	public GameLoop(Mediator mediator) {
 		this.mediator = mediator;
 	}
-
+	// desenha o botao de interface para selecionar torres
 	private void drawUIButton(Graphics2D g2, Rectangle r, Tower.Tipo tipo, boolean selected) {
 		Color old = g2.getColor();
 		Color btnColor = selected ? new Color(60, 120, 255) : new Color(40, 40, 40, 180);
@@ -103,7 +104,7 @@ public class GameLoop {
 		g2.setFont(oldFont);
 		g2.setColor(old);
 	}
-
+	// verifica se a torre pode ser colocada na posicao especificada
 	private boolean canPlaceTowerAt(Point p) {
 		if (!placementArea.contains(p))
 			return false;
@@ -114,7 +115,7 @@ public class GameLoop {
 		}
 		return true;
 	}
-
+	// inicia o loop principal do jogo
 	public void start() {
 		frame = new JFrame("InsecTD");
 		frame.setIconImage(ResourceLoader.loadImage("logo.png"));
@@ -153,7 +154,7 @@ public class GameLoop {
 				}
 			}
 		});
-
+		// gerencia o movimento do mouse para selecionar torres e mostrar preview. mas acho que isso é obvio né
 		gamePanel.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
@@ -179,7 +180,7 @@ public class GameLoop {
 				}
 			}
 		});
-
+		// gerencia os cliques do mouse para colocar torres
 		gamePanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -241,7 +242,7 @@ public class GameLoop {
 		timer.start();
 		lastFrameTimeNs = System.nanoTime();
 	}
-
+	// atualiza o estado do jogo a cada frame. tentando rodar ao maximo fps que der pra os pc nao morrer
 	private void update() {
 		long nowNs = System.nanoTime();
 		float delta = lastFrameTimeNs == 0L ? 0f : (nowNs - lastFrameTimeNs) / 1_000_000_000f;
@@ -337,7 +338,7 @@ public class GameLoop {
 			}
 		}
 	}
-
+	// painel de jogo que lida com a renderizacao de todos os elementos visuais
 	private class GamePanel extends JPanel {
 		private final Image background;
 		private final Image coinImage;
@@ -360,7 +361,7 @@ public class GameLoop {
 			this.houseRef = house;
 			this.loopRef = loop;
 		}
-
+		// renderiza todos os elementos do jogo na tela
 		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
@@ -496,7 +497,7 @@ public class GameLoop {
 				}
 			}
 		}
-
+		// desenha o botao de interface para selecionar torres. o informativo necessario ae oh
 		private String[] buildTowerInfoLines(Tower t) {
 			return new String[] {
 					(t.displayName != null ? t.displayName : "Torre"),
