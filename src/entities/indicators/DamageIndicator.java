@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+// bom... apenas um indicador visual de dano causado nos inimigos. bem sutíl mas eficaz.
 public class DamageIndicator {
     private float x;
     private float y;
