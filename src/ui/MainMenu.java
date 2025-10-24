@@ -6,7 +6,7 @@ import util.ResourceLoader;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
-
+// Classe do menu principal do jogo
 public class MainMenu {
     private Mediator mediator;
     private float musicVolume = 0.5f;
@@ -15,7 +15,7 @@ public class MainMenu {
     public MainMenu(Mediator mediator) {
         this.mediator = mediator;
     }
-
+    // Método para exibir o menu
     public void show() {
         System.out.println("TesteMenu");
 
@@ -66,7 +66,7 @@ public class MainMenu {
         soundPlayer.playLoop("menu-music.wav", musicVolume);
         System.out.println("Menu iniciado");
     }
-
+    // Método auxiliar para criar botões do menu
     private JButton createMenuButton(String normalPath, String hoverPath, ActionListener event) {
         ImageIcon normalIcon = scaleIcon(loadIcon(normalPath), 150, 60);
         ImageIcon hoverIcon = scaleIcon(loadIcon(hoverPath), 150, 60);
@@ -79,7 +79,7 @@ public class MainMenu {
         button.addActionListener(event);
         return button;
     }
-
+    // Método auxiliar para adicionar botões ao painel com layout adequado
     private void addButtonsToPanel(JPanel panel, JButton startButton, JButton exitButton) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2, 10, 2, 10);
