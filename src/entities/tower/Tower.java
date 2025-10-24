@@ -37,26 +37,26 @@ public class Tower {
                 this.rangeRadius = 150f;
                 this.damage = 8;
                 this.fireRatePerSecond = 0.9f;
-                this.displayName = "Estilingue";
+                this.displayName = "Badogada";
                 this.cost = 80;
                 this.image = ResourceLoader.loadImage("tower_pedra.png");
                 this.projectileImage = ResourceLoader.loadImage("pedra.png");
                 break;
             case AIR:
-                this.rangeRadius = 130f;
+                this.rangeRadius = 140f;
                 this.damage = 3;
-                this.fireRatePerSecond = 1.4f;
+                this.fireRatePerSecond = 1.3f;
                 this.displayName = "Chinelada";
                 this.cost = 90;
                 this.image = ResourceLoader.loadImage("tower_test.png");
                 this.projectileImage = ResourceLoader.loadImage("projectile.png");
                 break;
             case FAST:
-                this.rangeRadius = 120f;
-                this.damage = 5;
-                this.fireRatePerSecond = 3.0f;
-                this.displayName = "Anti-Inseto";
-                this.cost = 120;
+                this.rangeRadius = 130f;
+                this.damage = 4;
+                this.fireRatePerSecond = 2.3f;
+                this.displayName = "Eletrupicada";
+                this.cost = 100;
                 this.image = ResourceLoader.loadImage("tesla.png");
                 this.projectileImage = null; // Usará efeito de raio
                 break;
@@ -73,7 +73,7 @@ public class Tower {
             case AIR:
                 return 90;
             case FAST:
-                return 120;
+                return 100;
             default:
                 return 0;
         }
