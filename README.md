@@ -58,7 +58,7 @@ Construa torres estrategicamente para eliminar inimigos antes que alcancem sua c
 
 1. **Clone o repositório**
 ```bash
-git clone https://github.com/seu-usuario/insectd.git
+git clone https://github.com/neemo-o/insectd.git
 cd insectd
 ```
 
